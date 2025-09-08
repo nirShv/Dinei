@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TODO: Add title, meta tags, tracking tags, and favicon. -->
+    <title>CallApp Landing Page</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <div class="page-container">
+        <div id="columnOne">
+            <img id="mobileLogo" class="mobile-only" src="./assets/Logo_White.svg" alt="CallApp Logo">
+            <picture id="phones">
+                <source media="(min-width: 1200px)" srcset="./assets/phones_xl.webp">
+                <source media="(min-width: 601px)" srcset="./assets/phones_lg.webp">
+                <source media="(min-width: 351px)" srcset="./assets/phones_md.webp">
+                <source media="(min-width: 251px)" srcset="./assets/phones_sm.webp">
+                <source media="(max-width: 250px)" srcset="./assets/phones_xs.webp">
+                <img src="./assets/phones_xs.webp" alt="Phones receiving scam calls." aria-hidden="true">
+            </picture>
+        </div>
+        <div id="columnTwo">
+            <img id="desktopLogo" class="desktop-only" src="./assets/Logo_White.svg" alt="CallApp Logo">
+            <p><span class="bold">Tired of scam?</span><br>Try CallApp for Free!</p>
+            <!-- TODO: Change the HREF to the real download link. -->
+            <a class="cta-button flex-button" href="https://app.appsflyer.com/com.callapp.contacts?pid=propellerads_int&af_siteid={zoneid}&c={campaignid}&af_cost_value={cost}&af_click_lookback=7d&clickid=${SUBID}" aria-label="Download CallApp on Google Play" role="button">
+                <img src="./assets/Google_Play_logo.svg" alt="Google Play Logo">
+                <img src="./assets/Get_it_on_Google_Play.svg" alt="Get it on Google Play">
+            </a>
+            <div class="awards text-secondary">
+                <div class="awards-container">
+                    <img class="branch" src="./assets/branch_L.svg" alt="Branch">
+                    <p>Trusted by<br><span class="bold text-dark">Over 300M<br>users</span></p>
+                    <img class="branch" src="./assets/branch_R.svg" alt="Branch">
+                </div>
+                <div class="awards-container">
+                    <img class="star" src="./assets/star.svg" alt="star">
+                    <p class="text-dark text-small">Over <span class="semi-bold">1M 5-star</span> Reviews</p>
+                    <img class="star" src="./assets/star.svg" alt="star">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
