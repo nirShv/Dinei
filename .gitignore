@@ -1,0 +1,5 @@
+/*                 # התעלם מהכול ברמה העליונה
+!.gitignore
+!/CallApp_for_business/
+ /CallApp_for_business/*   # התעלם מכל מה שבתיקייה
+!/CallApp_for_business/dinei.html   # חוץ מהקובץ הזה
