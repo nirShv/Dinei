@@ -641,6 +641,63 @@
     </section>
 
     <script>
+      /* === Registry מרכזי לתמרורים אמיתיים === */
+const SIGNS = {
+  // מהירות/תחומים/אזורי דרך
+  '216': { file: 'Israel_road_sign_216.svg', label: 'דרך מהירה (תחילה)', cat: 'הוריה' },
+  '217': { file: 'Israel_road_sign_217.svg', label: 'קצה דרך מהירה', cat: 'הוריה' },
+  '218': { file: 'Israel_road_sign_218.svg', label: 'מהירות מינימלית', cat: 'הוריה' },
+  '220': { file: 'Israel_road_sign_220.svg', label: 'רחוב משולב (תחילה)', cat: 'הוריה' },
+  '221': { file: 'Israel_road_sign_221.svg', label: 'קצה רחוב משולב', cat: 'הוריה' },
+  '222': { file: 'Israel_road_sign_222.svg', label: 'אזור מיתון תנועה (תחילה)', cat: 'הוריה' },
+  '223': { file: 'Israel_road_sign_223.svg', label: 'קצה אזור מיתון תנועה', cat: 'הוריה' },
+  '424': { file: 'Israel_road_sign_424.svg', label: 'אזור דרכים עירוניות (תחילה)', cat: 'איסורים/הגבלות' },
+  '425': { file: 'Israel_road_sign_425.svg', label: 'קצה אזור דרכים עירוניות', cat: 'איסורים/הגבלות' },
+
+  // מהירות מיוחדת
+  '426-50': { file: 'Israel_road_sign_426-50.svg', label: 'מהירות מיוחדת 50', cat: 'איסורים/הגבלות' },
+  '426-70': { file: 'Israel_road_sign_426-70.svg', label: 'מהירות מיוחדת 70', cat: 'איסורים/הגבלות' },
+  '426-90': { file: 'Israel_road_sign_426-90.svg', label: 'מהירות מיוחדת 90', cat: 'איסורים/הגבלות' },
+  '427-50': { file: 'Israel_road_sign_427-50.svg', label: 'קצה מהירות מיוחדת 50', cat: 'איסורים/הגבלות' },
+
+  // קדימות
+  '301': { file: 'Israel_road_sign_301.svg', label: 'תן זכות קדימה', cat: 'קדימות' },
+  '302': { file: 'Israel_road_sign_302.svg', label: 'עצור', cat: 'קדימות' },
+
+  // חניה על מדרכה (לשאלות 21/חניה חריגה)
+  '627': { file: 'Israel_road_sign_627.svg', label: 'מותרת חניה על מדרכה', cat: 'מודיעין/חניה' },
+};
+
+/* בניית URL לקובץ בוויקימדיה (upload.wikimedia.org) */
+function signURL(fileName) {
+  return `https://upload.wikimedia.org/wikipedia/commons/thumb/${fileName.startsWith('Israel_') ? '' : ''}${encodeURIComponent(fileName)}/120px-${fileName}.png`;
+}
+
+/* רנדר רשת תמרורים */
+function renderSignsGrid(signIds = [], notes = '') {
+  if (!Array.isArray(signIds) || signIds.length === 0) {
+    return `<h3>תמרורים</h3><p class="muted">אין תמרורים רלוונטיים לשאלה זו.</p>`;
+  }
+  const items = signIds.map(id => {
+    const s = SIGNS[id];
+    if (!s) return '';
+    const src = signURL(s.file);
+    const alt = `${id} – ${s.label}`;
+    return `
+      <figure class="sign">
+        <img src="${src}" alt="${alt}" loading="lazy"/>
+        <figcaption>${id} – ${s.label}<br><small>קטגוריה: ${s.cat}</small></figcaption>
+      </figure>`;
+  }).join('');
+
+  return `
+    <h3>תמרורים</h3>
+    ${notes ? `<p class="muted">${notes}</p>` : ''}
+    <div class="signs">
+      <div class="signs__row">${items}</div>
+    </div>`;
+}
+
         const qaData = [
             /* --- 19: מהירויות --- */
             {
@@ -1188,7 +1245,10 @@
               <li><strong>חובת זהירות כללית</strong>: גם לזכאי לקדימות – למנוע תאונה בפועל.</li>
             </ul>
           `,
-                    signs: `
+            signsList: ['301','302'],
+  signNotes: 'בצומת מרומזר – הוראת הרמזור גוברת; קו עצירה הינו סימון כביש ולא תמרור.',
+                    
+          signs: `
             <h3>תמרורים</h3>
             <ul>
               <li><strong>301 – תן זכות קדימה</strong> (תמרור הוריה, קדימות).</li>
@@ -1975,36 +2035,39 @@
             });
         }
 
-        function onTabClick(ev) {
-            const btn = ev.target.closest('.tab-btn');
-            if (!btn) return;
+  function onTabClick(ev) {
+  const btn = ev.target.closest('.tab-btn');
+  if (!btn) return;
 
-            const qid = Number(btn.dataset.activeQid);
-            const key = btn.dataset.section;
-            const item = qaData.find(q => q.id === qid);
-            if (!item) return;
+  const qid = Number(btn.dataset.activeQid);
+  const key = btn.dataset.section;
+  const item = qaData.find(q => q.id === qid);
+  if (!item) return;
 
-            let html = item.sections[key] || '<p class="placeholder">—</p>';
+  let html;
 
-            const content = (typeof sanitizeCitations === 'function') ? sanitizeCitations(html) : html;
-            cardContent.innerHTML = content;
+  if (key === 'signs' && item.signsList) {
+    // רנדר דינמי מתוארי השאלה
+    html = renderSignsGrid(item.signsList, item.signNotes || '');
+  } else {
+    // התנהגות קיימת – משתמשים ב-HTML שבשאלה אם קיים
+    html = (item.sections && item.sections[key]) || '<p class="placeholder">—</p>';
+  }
 
-            // אתחול דיאגרמות בעת כניסה לטאב "דיאגרמה"
-            if (key === 'diagram') {
-                if (typeof initNov24Chart === 'function' && document.getElementById('nov24-root')) {
-                    setTimeout(initNov24Chart, 0);
-                }
-                if (typeof initQ19Diagram === 'function' && document.getElementById('q19-root')) {
-                    setTimeout(initQ19Diagram, 0);
-                }
-            }
+  const content = (typeof sanitizeCitations === 'function') ? sanitizeCitations(html) : html;
+  cardContent.innerHTML = content;
 
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                const active = (b === btn);
-                b.setAttribute('aria-pressed', String(active));
-                b.setAttribute('aria-selected', String(active));
-            });
-        }
+  // (שאר הקוד שלך: initNov24Chart, עדכון aria וכו’)
+  if (key === 'diagram' && typeof initNov24Chart === 'function') {
+    if (document.getElementById('nov24-root')) setTimeout(initNov24Chart, 0);
+  }
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const active = (b === btn);
+    b.setAttribute('aria-pressed', String(active));
+    b.setAttribute('aria-selected', String(active));
+  });
+}
+
 
         function switchScreen(target) {
             const showPicker = (target === 'picker');
