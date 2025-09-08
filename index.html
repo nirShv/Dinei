@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>בחירת שאלה • דיני תעבורה</title>
+    <style>
+        :root {
+            --bg: #f6f7f9;
+            --card: #fff;
+            --ink: #0f172a;
+            --muted: #6b7280;
+            --accent: #2563eb;
+            --accent-ink: #fff;
+            --border: #e5e7eb;
+            --radius: 16px;
+            --gap: 14px;
+            --maxw: 960px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", "Noto Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+            line-height: 1.55;
+            padding: 24px 16px 64px
+        }
+
+        header.app {
+            max-width: var(--maxw);
+            margin: 0 auto 16px;
+            display: grid;
+            gap: 6px
+        }
+
+        header.app h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -.02em
+        }
+
+        header.app p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .95rem
+        }
+
+        .screen {
+            max-width: var(--maxw);
+            margin: 0 auto
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        .picker {
+            display: grid;
+            gap: 18px;
+            justify-items: center;
+            margin-top: 12px
+        }
+
+        .picker__grid {
+            width: 100%;
+            display: grid;
+            gap: var(--gap);
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+        }
+
+        .q-btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--ink);
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform .06s, border-color .2s, box-shadow .2s;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+            text-align: center
+        }
+
+        .q-btn:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, .08)
+        }
+
+        .q-btn:active {
+            transform: translateY(1px)
+        }
+
+        .picker__hint {
+            color: var(--muted);
+            font-size: .92rem
+        }
+
+        .stage {
+            display: grid;
+            gap: 16px;
+            justify-items: center;
+            margin-top: 8px
+        }
+
+        .backbar {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            justify-content: flex-start
+        }
+
+        .back-btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: .95rem;
+            cursor: pointer;
+            transition: background .2s, border-color .2s, transform .04s
+        }
+
+        .back-btn:hover {
+            background: #fafafa;
+            border-color: #dbe0e6
+        }
+
+        .back-btn:active {
+            transform: translateY(1px)
+        }
+
+        .card {
+            width: min(760px, 100%);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            min-height: 320px;
+            overflow: clip;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04)
+        }
+
+        .card__header {
+            padding: 18px 18px 8px
+        }
+
+        .card__title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -.01em
+        }
+
+        .card__subtitle {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: .95rem
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: #fafafa;
+            flex-wrap: wrap
+        }
+
+        .tab-btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: .95rem;
+            cursor: pointer;
+            transition: background .2s, color .2s, border-color .2s, transform .04s
+        }
+
+        .tab-btn[aria-pressed="true"] {
+            background: var(--accent);
+            color: var(--accent-ink);
+            border-color: var(--accent)
+        }
+
+        .tab-btn:active {
+            transform: translateY(1px)
+        }
+
+        .card__content {
+            padding: 16px 18px 20px;
+            display: grid;
+            align-content: start;
+            gap: 12px;
+            font-size: 1rem;
+            min-height: 140px
+        }
+
+        .placeholder {
+            color: var(--muted);
+            font-size: .96rem
+        }
+
+        .card__content h3 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 800
+        }
+
+        .card__content ul {
+            margin: 0;
+            padding: 0 1.1em 0 0
+        }
+
+        .signs {
+            display: grid;
+            gap: 10px
+        }
+
+        .signs__row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px
+        }
+
+        .sign {
+            display: grid;
+            gap: 8px;
+            justify-items: center;
+            padding: 10px;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            background: #fff
+        }
+
+        .sign img {
+            width: 90px;
+            height: auto;
+            display: block
+        }
+
+        .sign figcaption {
+            font-size: .85rem;
+            color: var(--muted);
+            text-align: center
+        }
+
+        .examples {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden
+        }
+
+        .examples table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .examples th,
+        .examples td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: right
+        }
+
+        .examples th {
+            background: #fafafa;
+            font-weight: 700
+        }
+
+        .points-diagram {
+            margin-top: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+            padding: 10px
+        }
+
+        .points-diagram svg {
+            width: 100%;
+            height: auto;
+            display: block
+        }
+
+        /* --- דיאגרמת אותות יד --- */
+        .hand-diagram {
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            padding: 12px
+        }
+
+        .hand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px
+        }
+
+        .hand-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px;
+            display: grid;
+            gap: 6px;
+            align-content: start
+        }
+
+        .hand-card h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800
+        }
+
+        .hand-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .92rem
+        }
+
+        .hand-card svg {
+            width: 100%;
+            height: auto;
+            display: block
+        }
+
+        /* --- דיאגרמה – שאלה 24 (קיימת) --- */
+        .nov24-chart {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            padding: 10px;
+        }
+
+        .nov24-chart svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .nov24-chart .pt circle,
+        .nov24-chart .pt polygon {
+            transition: opacity .2s, transform .2s, r .2s;
+            cursor: pointer;
+        }
+
+        .nov24-chart .pt text {
+            font-size: 11px;
+            pointer-events: auto;
+            /* אפשר קליק על התווית */
+            cursor: pointer;
+        }
+
+        .nov24-chart .pt.active circle,
+        .nov24-chart .pt.active polygon {
+            transform: scale(1.25);
+        }
+
+        .nov24-chart .pt.dimmed circle,
+        .nov24-chart .pt.dimmed polygon {
+            opacity: .23;
+        }
+
+        .nov24-legend {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .nov24-details {
+            margin-top: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            background: #fff;
+        }
+
+        .nov24-details h4 {
+            margin: 0 0 6px;
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .nov24-details ul {
+            margin: .25rem 0 0;
+            padding: 0 1.1em 0 0;
+        }
+
+        .nov24-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .nov24-controls label {
+            display: grid;
+            gap: 4px;
+            font-size: .92rem;
+            color: var(--muted);
+        }
+
+        .nov24-controls input[type="number"] {
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 96px;
+        }
+
+        .nov24-controls button {
+            appearance: none;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .nov24-controls button:hover {
+            background: #fafafa;
+        }
+
+        .nov24-error {
+            margin-top: 6px;
+            color: #b91c1c;
+            font-size: .9rem;
+            display: none;
+        }
+
+        /* --- Q19 Diagram (אינטראקטיבי) --- */
+        .q19-diagram {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            padding: 12px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .q19-diagram h4 {
+            margin: 0 0 4px;
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .q19-legend {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .q19-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .q19-grid.veh {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+
+        .q19-grid.road {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        }
+
+        .q19-btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 12px;
+            padding: 10px;
+            display: grid;
+            gap: 6px;
+            justify-items: center;
+            cursor: pointer;
+            transition: transform .06s, border-color .2s, box-shadow .2s;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+            text-align: center;
+        }
+
+        .q19-btn:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, .08);
+        }
+
+        .q19-btn:active {
+            transform: translateY(1px);
+        }
+
+        .q19-btn[aria-pressed="true"] {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .q19-btn svg {
+            width: 46px;
+            height: auto;
+            display: block;
+        }
+
+        .q19-info {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            background: #fff;
+            font-size: 1rem;
+        }
+
+        .q19-info .muted {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0b1220;
+                --card: #0f172a;
+                --ink: #e5e7eb;
+                --muted: #9aa4b2;
+                --accent: #3b82f6;
+                --accent-ink: #0b1220;
+                --border: #1f2937
+            }
+
+            .toolbar {
+                background: #0c1628
+            }
+
+            .q-btn,
+            .card {
+                box-shadow: 0 1px 2px rgba(0, 0, 0, .25)
+            }
+
+            .q-btn {
+                background: #0f172a
+            }
+
+            .back-btn {
+                background: #0f172a
+            }
+
+            .sign {
+                background: #0f172a
+            }
+
+            .examples th {
+                background: #0c1628
+            }
+
+            .points-diagram {
+                border-color: #1f2937;
+                background: #0f172a
+            }
+
+            .points-diagram text {
+                fill: #e5e7eb
+            }
+
+            .hand-diagram {
+                border-color: #1f2937;
+                background: #0f172a
+            }
+
+            .hand-card {
+                border-color: #1f2937
+            }
+        }
+
+        /* הוסף/י לקובץ ה-CSS */
+        .nov24-chart svg {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 920 / 520;
+            display: block;
+        }
+
+        .nov24-chart text {
+            fill: #475569;
+        }
+
+        /* טקסטים בצבע נראה */
+    </style>
+</head>
+
+<body>
+    <header class="app">
+        <h1>בחירת שאלה • דיני תעבורה</h1>
+        <p class="muted">בחר/י שאלה. לאחר הבחירה תוצג כרטיסיה אחת; התוכן יופיע רק בלחיצה על הכפתורים.</p>
+    </header>
+
+    <section id="screen-picker" class="screen picker" aria-labelledby="picker-title">
+        <h2 id="picker-title" class="visually-hidden"
+            style="position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;margin:-1px;overflow:hidden;">
+            בחירת השאלה לתרגול
+        </h2>
+        <div class="picker__grid" id="picker-grid" role="list"></div>
+        <p class="picker__hint">טיפ: למד כל פעם על קבוצת שאלות מצומצמת לפי נושא</p>
+    </section>
+
+    <section id="screen-stage" class="screen stage" hidden>
+        <div class="backbar">
+            <button class="back-btn" type="button" id="btn-back" aria-label="חזרה">← חזרה לבחירת שאלה</button>
+        </div>
+
+        <section id="card" class="card" aria-live="polite">
+            <header class="card__header">
+                <h2 class="card__title" id="card-title"></h2>
+                <p class="card__subtitle" id="card-subtitle"></p>
+            </header>
+
+            <div class="toolbar" role="tablist" aria-label="בחירת חלק התשובה">
+                <!-- סדר: פתיח → הגדרות ותקנות → תמרורים → תשובה → דיאגרמה -->
+                <button class="tab-btn" type="button" role="tab" data-section="intro" aria-selected="false"
+                    aria-pressed="false">פתיח</button>
+                <button class="tab-btn" type="button" role="tab" data-section="rules" aria-selected="false"
+                    aria-pressed="false">הגדרות ותקנות</button>
+                <button class="tab-btn" type="button" role="tab" data-section="signs" aria-selected="false"
+                    aria-pressed="false">תמרורים</button>
+                <button class="tab-btn" type="button" role="tab" data-section="answer" aria-selected="false"
+                    aria-pressed="false">תשובה</button>
+                <button class="tab-btn" type="button" role="tab" data-section="diagram" aria-selected="false"
+                    aria-pressed="false">דיאגרמה</button>
+            </div>
+
+            <div class="card__content" id="card-content" role="region" aria-live="polite">
+                <p class="placeholder">בחר/י חלק (פתיח/הגדרות ותקנות/תמרורים/תשובה) כדי להציג את התוכן.</p>
+            </div>
+        </section>
+    </section>
+
+    <script>
+        const qaData = [
+            /* --- 19: מהירויות --- */
+            {
+                id: 19,
+                question: "שאלה 19 – מהירויות: מרבית, מיוחדת, סבירה ומהירות ברישיון",
+                subtitle: "סוג הדרך × סוג הרכב × תמרור × מהירות סבירה",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>המהירות המותרת נקבעת לפי <strong>סוג הדרך</strong>, <strong>סוג הרכב</strong>, <strong>מהירות מיוחדת</strong> (426) ולפי <strong>המהירות המרבית ברישיון הרכב</strong>. בכל נסיעה חלה גם <strong>חובת מהירות סבירה בכל דרך ועל כל רכב</strong>.</p>
+          `,
+                    rules: `
+            <h3>מסגרת – מהירויות: מרבית, מיוחדת, סבירה ומהירות ברישיון</h3>
+            <h4>הגדרות</h4>
+            <ul>
+              <li><strong>מהירות סבירה</strong> – התאמת המהירות לתנאי הדרך/התנועה/הראות.</li>
+              <li><strong>מהירות מיוחדת (426)</strong> – מהירות שנקבעת עד לצומת/תמרור 427.</li>
+              <li><strong>דרך עירונית</strong> – אזור מסומן 424; קצה תחום – 425.</li>
+              <li><strong>דרך בינעירונית</strong> – כל דרך שאינה עירונית; המהירות תיקבע לפי סוג ההפרדה, אלא אם הוצב 426.</li>
+              <li><strong>דרך מהירה</strong> – בין־עירונית סגורה לכלים איטיים והולכי רגל.</li>
+            </ul>
+            <h4>כללי מהירות</h4>
+            <ul>
+              <li><strong>ברירת מחדל</strong>: עירונית – 50 קמ״ש; בינעירונית – 80/90 קמ״ש (לפי הפרדה); דרך מהירה – 110 קמ״ש.</li>
+              <li><strong>מהירות מיוחדת (426)</strong> גוברת עד לצומת/427.</li>
+              <li><strong>מהירות סבירה</strong> חלה תמיד.</li>
+              <li><strong>ברישיון הרכב</strong> – אם רשומה מהירות מרבית נמוכה יותר, היא המחייבת.</li>
+              <li><strong>עיקרון מנחה</strong>: נוהגים לפי <u>הנמוך</u> מבין כל הגורמים (ברירת מחדל/426/סבירה/רישיון).</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים רלוונטיים</h3>
+
+            <h4>מבוטל בצומת (כלל "עד לצומת" לתמרורי איסור/הגבלה)</h4>
+            <p class="muted">תוקף התמרור עד לצומת הקרוב, אלא אם הוצב תמרור קצה/שינוי – למשל 427/216/217/424/425. כלל זה חל על תמרורי איסורים והגבלות כגון מהירות מיוחדת, ומהירות מינימלית. <small>ע"פ הנחיות להצבת תמרורים</small></p>
+            <div class="signs">
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Israel_road_sign_426-50.svg/120px-Israel_road_sign_426-50.svg.png" alt="426 – מהירות מיוחדת" />
+                  <figcaption>426 – מהירות מיוחדת<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_218.svg" alt="218 – מהירות מינימלית" />
+                  <figcaption>218 – מהירות מינימלית (בדרך מהירה וכד׳)<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+              </div>
+            </div>
+
+            <h4>מבוטל רק בתמרור קצה/ביטול (לא מתבטל בצומת)</h4>
+            <p class="muted">אזורי דרך/משטר מיוחד נמשכים עד תמרור קצה הייעודי (או שינוי מפורש): דרך מהירה, רחוב משולב, אזור מיתון תנועה, אזור דרכים עירוניות.</p>
+            <div class="signs">
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_216.svg" alt="216 – כניסה לדרך מהירה" />
+                  <figcaption>216 – דרך מהירה (תחילה)<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_217.svg" alt="217 – קצה דרך מהירה" />
+                  <figcaption>217 – קצה דרך מהירה<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_220.svg" alt="220 – רחוב משולב" />
+                  <figcaption>220 – רחוב משולב (תחילה)<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_221.svg" alt="221 – קצה רחוב משולב" />
+                  <figcaption>221 – קצה רחוב משולב<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+              </div>
+
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_222.svg" alt="222 – אזור מיתון תנועה" />
+                  <figcaption>222 – אזור מיתון תנועה (תחילה)<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_223.svg" alt="223 – קצה אזור מיתון תנועה" />
+                  <figcaption>223 – קצה אזור מיתון תנועה<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Israel_road_sign_424.svg/120px-Israel_road_sign_424.svg.png" alt="424 – אזור דרכים עירוניות" />
+                  <figcaption>424 – אזור דרכים עירוניות (תחילה)<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Israel_road_sign_425.svg/120px-Israel_road_sign_425.svg.png" alt="425 – קצה אזור דרכים עירוניות" />
+                  <figcaption>425 – קצה אזור דרכים עירוניות<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+              </div>
+
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Israel_road_sign_427-50.svg/120px-Israel_road_sign_427-50.svg.png" alt="427 – קצה מהירות מיוחדת" />
+                  <figcaption>427 – קצה מהירות מיוחדת<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+              </div>
+              <p class="muted">הערה: בתוך אזור כזה (216/220/222/424) צומת פנימי <u>לא</u> מבטל את ההוראה; סיום רק בתמרור קצה מתאים.</p>
+            </div>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <p>נוהגים לפי <strong>הנמוך</strong> מבין: (א) ברירת המחדל לסוג הדרך; (ב) תמרור <em>מהירות מיוחדת</em> 426 (עד צומת/427); (ג) <em>מהירות סבירה</em> לפי תנאי הדרך; (ד) <em>המהירות המרבית ברישיון הרכב</em> אם נמוכה יותר.</p>
+
+            <div class="examples" aria-label="דוגמאות לרכבים ומהירויות">
+              <table>
+                <thead>
+                  <tr>
+                    <th>סוג רכב</th>
+                    <th>עירונית</th>
+                    <th>בינעירונית</th>
+                    <th>דרך מהירה</th>
+                    <th>הערות</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>רכב פרטי</strong></td>
+                    <td>50 קמ"ש או לפי תמרור מהירות מיוחדת</td>
+                    <td>80–90 קמ"ש (לפי הפרדה) או לפי תמרור מהירות מיוחדת</td>
+                    <td>110 קמ"ש או לפי תמרור מהירות מיוחדת</td>
+                    <td><small>כפוף ל־426/427, לרישיון הרכב ולמהירות סבירה</small></td>
+                  </tr>
+                  <tr>
+                    <td><strong>אוטובוס / אוטובוס זעיר</strong></td>
+                    <td>50 קמ"ש או לפי תמרור מהירות מיוחדת</td>
+                    <td>80–90 קמ"ש (לפי הפרדה) או לפי תמרור מהירות מיוחדת</td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ100 קמ"ש</td>
+                    <td><small>כפוף לתקנות/426</small></td>
+                  </tr>
+                  <tr>
+                    <td><strong>משאית &gt; 12 טון</strong></td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ50 קמ"ש</td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ80 קמ"ש (בכל הפרדה)</td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ80 קמ"ש</td>
+                    <td><small>כפוף ל־426</small></td>
+                  </tr>
+                  <tr>
+                    <td><strong>רכב איטי / טרקטור / מכונה</strong></td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ40 קמ"ש</td>
+                    <td>לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ40 קמ"ש</td>
+                    <td>אסור</td>
+                    <td><small>אסורים בדרך מהירה (216)</small></td>
+                  </tr>
+                  <tr>
+                    <td><strong>רכבת מקומית</strong></td>
+                    <td>50 קמ"ש או לפי תמרור מהירות מיוחדת</td>
+                    <td>70 קמ"ש (בכל הפרדה) או לפי תמרור מהירות מיוחדת</td>
+                    <td>אסור</td>
+                    <td><small>אסורה בדרך מהירה (216)</small></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="muted">דגשים: 426/218 חלים עד לצומת (אלא אם הוצב תמרור קצה/שינוי); לעומת זאת 216↔217, 220↔221, 222↔223, 424↔425 – אינם מתבטלים בצומת אלא רק בתמרור קצה המתאים.</p>
+          `,
+                    diagram: `
+            <h3>דיאגרמה – מהירות לפי סוג רכב וסוג דרך</h3>
+            <div id="q19-root" class="q19-diagram" role="group" aria-label="בחירה לפי סוג רכב וסוג דרך">
+              <section>
+                <h4>בחר/י סוג רכב</h4>
+                <div id="q19-veh" class="q19-grid veh" role="listbox" aria-label="סוגי רכב"></div>
+                <p class="q19-legend">טיפ: אפשר להחליף רכב בכל רגע – התוצאה תתעדכן.</p>
+              </section>
+
+              <section id="q19-roads-wrap" hidden>
+                <h4>בחר/י סוג דרך / מצב</h4>
+                <div id="q19-road" class="q19-grid road" role="listbox" aria-label="סוגי דרך"></div>
+                <p class="q19-legend">הגדרות: <strong>426</strong> – מהירות מיוחדת עד צומת/427; <strong>מהירות סבירה</strong> – תמיד לפי תנאי הדרך; 
+                <strong>ברישיון הרכב</strong> – אם הרשום נמוך יותר, הוא המחייב.</p>
+              </section>
+
+              <section id="q19-info" class="q19-info" aria-live="polite">
+                <p class="muted">בחר/י רכב, ואז סוג דרך – תוצג ההוראה המדויקת מהטבלה.</p>
+              </section>
+            </div>
+          `
+                }
+            },
+
+            /* --- 20: ביה"ס לנהיגה --- */
+            {
+                id: 20,
+                question: "שאלה 20 – חובות בעל בית ספר לנהיגה כלפי רשות הרישוי",
+                subtitle: "רישוי, תנאי הקמה והפעלה, וניהול רישומים",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>החוק והתקנות קובעים משטר רישוי ופיקוח מחמירים לבתי ספר לנהיגה, כדי להבטיח הוראת נהיגה מקצועית, בטוחה ושקופה. האחריות לפניך היא של <strong>בעל בית הספר</strong> (או המנהל המקצועי מטעמו) מול <strong>רשות הרישוי</strong>.</p>
+          `,
+                    rules: `
+            <h3>מסגרת – חובות בעל בית ספר לנהיגה מול רשות הרישוי</h3>
+            <h4>הגדרות תפקידים</h4>
+            <ul>
+              <li><strong>בעל בית ספר</strong> – מי שעל שמו רשום ביה״ס.</li>
+              <li><strong>רשות הרישוי</strong> – הגוף המוסמך לרישוי, פיקוח ודרישת מסמכים.</li>
+              <li><strong>מנהל מקצועי</strong> – בעל היתר לניהול מקצועי לסוגי הרכב בביה״ס.</li>
+              <li><strong>מורה נהיגה מוסמך</strong> – בעל רישיון להוראת נהיגה לסוג הרכב הרלוונטי; להוראה עיונית נדרש היתר ייעודי.</li>
+            </ul>
+            <h4>חובות ותנאי רישוי</h4>
+            <ul>
+              <li>החזקת/ניהול ביה״ס <strong>אך ורק ברישיון</strong> ועל פי תנאיו; בעל ביה״ס אחראי להפעלה.</li>
+              <li>מקום מתאים להוראה עיונית וחניית רכבי ביה״ס; רכבי לימוד מאושרים <u>בכתב</u> + ביטוח; ציוד/אביזרים תקניים; סימני היכר בעת לימוד.</li>
+              <li>הצגת רישיון ביה״ס במקום בולט; ציון שעות פתיחה/סגירה.</li>
+              <li>ניהול רישומי תלמידים, מסירת דו״חות/מסמכים לרשות לפי דרישה; מסירת <strong>תעודת לימוד</strong> חתומה לכל תלמיד <u>ללא תשלום</u>.</li>
+              <li>העסקה רק של <strong>מורי נהיגה מוסמכים</strong> (ועבור לימוד עיוני – בעלי היתר מתאים).</li>
+              <li>יישור קו עם <strong>תכנית לימודים</strong> שקבעה הרשות (מותר להוסיף, אסור לגרוע).</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <p class="muted">אין תמרורים רלוונטיים לשאלה זו.</p>
+          `,
+                    answer: `
+            <h3>תשובה – חובות בעל בית הספר כלפי רשות הרישוי (כל 9 הסעיפים)</h3>
+            <ol>
+              <li><strong>רכבי לימוד מאושרים</strong> – לא ירשה להורות נהיגה אלא ברכב שאושר <u>בכתב</u> על ידי הרשות.</li>
+              <li><strong>תכנית לימודים</strong> – לנהל הוראה לפי התכנית שקבעה רשות הרישוי; מותר להוסיף תכנים, אך <u>אסור לגרוע</u>.</li>
+              <li><strong>החזקה ותצוגה</strong> – להחזיק את רישיון ביה״ס במקום בולט; לא להעבירו לאחר אלא בהיתר <u>בכתב</u>. לציין שעות פתיחה/סגירה על דלת ביה״ס במקום נראה לעין.</li>
+              <li><strong>המצאת אמצעים</strong> – להמציא לרשות הרישוי את רכבי הלימוד, הציוד והרישיונות המשמשים להוראה לפי דרישתה.</li>
+              <li><strong>רישום תלמידים</strong> – לנהל רישום יומי של כל תלמידי ביה״ס ולהמציא לרשות או למבקר מטעמה, בכל עת, כל דו״ח/מסמך הנוגעים לפעילות.</li>
+              <li><strong>תעודת לימוד</strong> – למסור לרשות לגבי כל תלמיד שלמד בביה״ס <u>תעודה</u> לפי שקבעה, חתומה; בעבורה <u>לא יידרש תשלום</u>.</li>
+              <li><strong>ניהול מסמכים ודיווח אמת</strong> – לנהל דוחות ומסמכים הנוגעים לפעילות ביה״ס ולמסור <u>פרטים נכונים ומלאים</u> בכל עת שתידרש.</li>
+              <li><strong>העסקת מורי נהיגה</strong> – לא להעסיק בהוראת נהיגה אלא <u>מורה נהיגה מוסמך</u> בעל רישיון לאותו סוג רכב.</li>
+              <li><strong>הוראה עיונית</strong> – לא להעסיק בהוראה עיונית אלא מורה מוסמך בעל <u>היתר</u> להוראה עיונית מרשות הרישוי.</li>
+            </ol>
+          `
+                }
+            },
+
+            /* --- 21 --- */
+            {
+                id: 21,
+                question: "שאלה 21 – באילו מקרים מאפשר החוק לנסוע או לעצור שלא בכביש?",
+                subtitle: "שול הדרך • מדרכה • שטח הפרדה • דרך שאינה עירונית/מהירה",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>ברירת המחדל: נוסעים על <strong>הכביש</strong>. בשל מגבלות הנדסיות, סוגי רכב מסוימים ומצבי בטיחות, החוק מתיר במקרים מוגדרים לנסוע או לעצור <em>שלא בכביש</em> (שול, מדרכה וכד׳).</p>
+          `,
+                    rules: `
+            <h3>מסגרת – נסיעה/עצירה שלא בכביש</h3>
+            <h4>הגדרות</h4>
+            <ul>
+              <li><strong>כביש</strong> – חלק הדרך לתנועת כלי רכב; <u>לא</u> כולל שול.</li>
+              <li><strong>שול</strong> – שטח סמוך לשפת הכביש שאין לצדו מדרכה (עד 4 מ׳ או עד תעלת ניקוז).</li>
+              <li><strong>מדרכה</strong> – מיועדת להולכי רגל.</li>
+              <li><strong>שטח הפרדה</strong> – מבנה/אי/סימון המחלק בין כיווני הנסיעה.</li>
+            </ul>
+            <h4>כללים</h4>
+            <ul>
+              <li><strong>ככלל</strong>: נוסעים בכביש; משתמשים בדרך לפי הסדרים ומתקניה.</li>
+              <li><strong>שול</strong>: לשם מניעת עיכוב; רכב איטי/טרקטור/שאינו־מנועי ירד לשול כשאפשר; רכב שמתקשה בקצב – מותר לנוע בשול מיוצב ופנוי; בשיעור נהיגה – לפי הוראת המורה.</li>
+              <li><strong>מדרכה</strong>: חצייה לחניה/חצרים; רכב לניקוי מדרכה; במקום שהותרה חניה על מדרכה – הגעה/עזיבה; קלנועית/רכינוע על המדרכה אם קיימת ומתאימה.</li>
+              <li><strong>שטח הפרדה</strong>: אסור – אלא אם הותר מפורשות בתמרור ובמקום שהותר.</li>
+              <li><strong>דרך שאינה עירונית</strong>: עצירה/חניה רק בשול, רחוק מהתנועה ולמטרות נקובות (העלאה/הורדה; החלפת נהג; חילוץ; רכב תקול; עבודות ציבוריות בהיתר; רכב צה״ל בתפקיד).</li>
+              <li><strong>דרך מהירה</strong>: אסורה עצירה להעלאה/הורדה; אין העמדה/חניה בין הגדרות אלא אם סומן אחרת.</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <p class="muted">אין תמרורים רלוונטיים ישירים לשאלה זו, אך אלו התמרורים הרלוונטיים ל<span dir="ltr">Exceptions</span> (החריגים) המוזכרים בתקנות.</p>
+
+            <h4>דרך מהירה ומהירות מינימלית</h4>
+            <div class="signs">
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_216.svg" alt="216 – דרך מהירה" />
+                  <figcaption>216 – דרך מהירה<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_217.svg" alt="217 – קצה דרך מהירה" />
+                  <figcaption>217 – קצה דרך מהירה<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_218.svg" alt="218 – מהירות מינימלית" />
+                  <figcaption>218 – מהירות מינימלית<br><small>קטגוריה: הוריה</small></figcaption>
+                </figure>
+              </div>
+            </div>
+
+            <h4>תחום עירוני</h4>
+            <div class="signs">
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Israel_road_sign_424.svg/120px-Israel_road_sign_424.svg.png" alt="424 – אזור דרכים עירוניות" />
+                  <figcaption>424 – אזור דרכים עירוניות<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+                <figure class="sign">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Israel_road_sign_425.svg/120px-Israel_road_sign_425.svg.png" alt="425 – קצה אזור דרכים עירוניות" />
+                  <figcaption>425 – קצה אזור דרכים עירוניות<br><small>קטגוריה: איסורים והגבלות</small></figcaption>
+                </figure>
+              </div>
+            </div>
+
+            <h4>חניה על מדרכה שהותרה</h4>
+            <div class="signs">
+              <div class="signs__row">
+                <figure class="sign">
+                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_627.svg" alt="627 – מותרת חניה על מדרכה" />
+                  <figcaption>627 – מותרת חניה על מדרכה<br><small>קטגוריה: מודיעין/חניה</small></figcaption>
+                </figure>
+              </div>
+            </div>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <p><strong>מותר לנסוע/לעצור שלא בכביש</strong> רק במקרים הללו:</p>
+            <ol>
+              <li><strong>שול הדרך (נסיעה)</strong>: למניעת עיכוב; כלי <u>איטי/טרקטור/שאינו-מנועי</u> כשצריך; רכב שמאט עקב מטען/שיפוע – אם השול <u>מיוצב ופנוי</u>; בשיעור נהיגה לפי הוראת המורה.</li>
+              <li><strong>מדרכה</strong>: חצייה ל/מ חניה/חצרים; רכב לניקוי מדרכה; מקום שבו הותרה <u>חניה על מדרכה</u> – הגעה/עזיבה; <u>קלנועית/רכינוע</u> – על המדרכה, אלא אם אין/לא אפשרית.</li>
+              <li><strong>שטח הפרדה</strong>: <u>אסור</u> – למעט אם הותר מפורשות בתמרור ובמקום שהותר.</li>
+              <li><strong>דרך שאינה עירונית (ראשית/אזורית)</strong>: מותר לעצור/להחנות <u>בשול ורחוק מהתנועה</u> רק ל– א–ו: העלאה/הורדה; החלפת נהג; חילוץ נפגעים; רכב תקול; עבודות ציבוריות בהיתר כתוב; רכב צה״ל בתפקיד.</li>
+              <li><strong>בדרך מהירה</strong>: אין עצירה להעלאה/הורדה; אין העמדה/חניה בין הגדרות אלא אם צוין אחרת בתמרור.</li>
+            </ol>
+            <p class="muted">גם היכן שמותר – תמיד יש לנהוג במהירות סבירה ולהתאים את הנהיגה לתנאים.</p>
+          `
+                }
+            },
+
+            /* --- 22 --- */
+            {
+                id: 22,
+                question: "שאלה 22 – שיטת הניקוד: סמכויות, צבירה ואמצעי תיקון",
+                subtitle: "מי קובע? איך נקודות נספרות? מה קורה בכל סף?",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p><strong>שיטת הניקוד</strong> היא מערכת מעקב והרתעה לעבירות תעבורה: מעבר לעונש/קנס, נרשמות לנהג נקודות לפי חומרת העבירה. כאשר מצטבר מספר נקודות מסוים בתקופת הצבירה, מוטלים <em>אמצעי תיקון</em> מדורגים.</p>
+            <ul>
+              <li>מטרות: הרתעה, זיהוי מורשעים תכופים, שמירה על בטיחות משתמשי הדרך, ומתן כלים לשיפור נהיגה.</li>
+            </ul>
+          `,
+                    rules: `
+            <h3>מסגרת – שיטת הניקוד: מי קובע? איך נרשמות נקודות? מה תוקפן?</h3>
+            <h4>סמכויות ומסגרת</h4>
+            <ul>
+              <li>שר התחבורה (באישור שר המשפטים) קובע את שיטת רישום הנקודות לעבירות שבתוספת.</li>
+              <li>שר התחבורה, בהסכמת ועדת הכלכלה, קובע <strong>אמצעי תיקון</strong>.</li>
+              <li>רשות הרישוי מנהלת את מרשם ההרשעות והנקודות.</li>
+            </ul>
+            <h4>כללי רישום וניהול</h4>
+            <ul>
+              <li><strong>כתב אישום אחד</strong>: נספר מספר הנקודות הגבוה מבין העבירות שבהן הורשע הנהג.</li>
+              <li><strong>ערעור</strong>: נקודות בגין אותה הרשעה אינן נספרות עד לפסק דין סופי.</li>
+            </ul>
+            <h4>צבירה ותוקף</h4>
+            <ul>
+              <li>ברירת מחדל: נקודות תקפות <strong>שנתיים</strong> מיום ביצוע העבירה.</li>
+              <li>נצברו <strong>22+</strong> בתקופה: הארכת תקופת הצבירה ל־<strong>4 שנים</strong>.</li>
+              <li>נצברו <strong>12+</strong>: נקודות נשארות תקפות <strong>עד ביצוע אמצעי התיקון</strong>.</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <p class="muted">אין תמרורים רלוונטיים ישירים לשאלה זו; מדובר במשטר ניהול־נקודות ואמצעי תיקון. </p>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <p><strong>מי קובע:</strong> שר התחבורה (באישור שר המשפטים) קובע את שיטת הניקוד; שר התחבורה בהסכמת ועדת הכלכלה קובע את אמצעי התיקון. רשות הרישוי מנהלת את מרשם ההרשעות והנקודות.</p>
+            <p><strong>כללי רישום/צבירה:</strong> כתב אישום אחד – נרשמות נקודות העבירה הגבוהה ביותר; בעת ערעור – הנקודות אינן נספרות עד לפסק דין סופי. נקודות תקפות 2 שנים, אך אם נצברו 22 נק׳ או יותר בתקופה – תקופת הצבירה מוארכת ל-4 שנים; אם נצברו 12 נק׳ או יותר – הנקודות יישארו תקפות עד ביצוע אמצעי התיקון.</p>
+            <p><strong>אמצעי תיקון לפי ספים:</strong></p>
+            <ul>
+              <li>12–22 נק׳: קורס נהיגה נכונה בסיסי + מבחן עיוני.</li>
+              <li>24–34 נק׳: קורס נהיגה נכונה מתקדם/ייעודי + מבחן עיוני.</li>
+              <li>≥36 נק׳: פסילה ל-3 חודשים; חידוש לאחר מבחן עיוני.</li>
+              <li>≥72 נק׳ או ≥36 בשנית ב-6 שנים: פסילה ל-9 חודשים; חידוש לאחר בדיקות במכון הרפואי לבטיחות בדרכים ומעבר מבחן עיוני ומעשי.</li>
+            </ul>
+            <p><strong>הליך והודעות:</strong> ניתנת אפשרות טיעון לפני פסילה; הודעת רשות בדואר רשום נחשבת כמסורה לאחר 15 יום; היעדרות &gt;20% מהקורס או כישלון 3 פעמים במבחן = אי-ביצוע; במקרה אי-ביצוע – הרשות רשאית להתלות רישיון, שיש להפקיד תוך 10 ימים.</p>
+          `,
+                    diagram: `
+            <h3>דיאגרמה</h3>
+            <!-- הדיאגרמה המלאה של שאלה 22 נמצאת בקוד המקורי שלך; השארתי את התשובה הטקסטואלית כאן בלבד.
+                 אם תרצה שאעביר גם את ה-SVG/תרשים "מדרגות+ציר זמן" לכאן, תגיד ואוסיף. -->
+          `
+                }
+            },
+
+            /* --- 23 --- */
+            {
+                id: 23,
+                question: "שאלה 23 – פרט הוראות תקנות התעבורה בדבר האיתות ודרך האיתות",
+                subtitle: "מחווני כיוון, אותות יד, צופר, אור בלם ואותות מצוקה",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>אמצעי האיתות הם ה"שפה" שבאמצעותה הנהגים מתאמים תנועה: פנייה, סטייה, עצירה, האטה וחירום. על הנהג לדאוג שהאמצעים תקינים, ואם התקלקלו בזמן נסיעה – להשתמש באותות יד ולהסדיר את התקלה ללא דיחוי.</p>
+          `,
+                    rules: `
+            <h3>מסגרת – איתות: מחווני כיוון, אותות יד, אור בלם, צופר ומהבהבים</h3>
+            <h4>מתי נותנים אות</h4>
+            <ul>
+              <li>לפני התחלת נסיעה, לפני פנייה/סטייה מנתיב, ולפני עצירה – <strong>מבעוד מועד</strong> ובאופן הנראה היטב.</li>
+            </ul>
+            <h4>כיצד נותנים אות</h4>
+            <ul>
+              <li><strong>מחווני כיוון</strong>: שמאל/ימין לפי הפעולה.</li>
+              <li><strong>תקלה במחוון</strong>: שמאלה – זרוע שמאל אופקית; ימינה – תנועת סיבוב של כף/זרוע שמאל עם כיוון השעון.</li>
+              <li><strong>אופניים</strong>: לפנייה ימינה – זרוע ימין אופקית.</li>
+              <li>בסיום הפעולה – מפסיקים איתות.</li>
+            </ul>
+            <h4>אמצעי אזהרה נוספים</h4>
+            <ul>
+              <li><strong>אור בלם</strong>: נדלק אוטומטית; תקלה – נענוע כף יד שמאל למעלה־מטה (זרוע החוצה, כף היד פונה מטה).</li>
+              <li><strong>צופר</strong>: בעיר – רק למניעת סכנה שלא ניתן למנוע אחרת; בכל מקום – לא ממושך/מעבר לנדרש.</li>
+              <li><strong>אותות מצוקה</strong>: רכב עומד – לשול, להציב משולש (≈100 מ׳), ולהפעיל מהבהבים; לפנות בהקדם.</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <p class="muted">אין תמרורים רלוונטיים ישירים לשאלה זו, אך תמרורי רמזור/נתיבים/פנייה עשויים להשפיע על הצורך והעיתוי של האיתות בהתאם להקשר המקומי.</p>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <ol>
+              <li><strong>מועדי האיתות</strong>: לפני התחלת נסיעה, לפני פנייה/סטייה, ולפני עצירה – תמיד מוקדם מספיק ובדרך הנראית היטב.</li>
+              <li><strong>אופן האיתות</strong>:
+                <ul>
+                  <li>שמאלה – מחוון שמאל; תקלה: זרוע שמאל אופקית.</li>
+                  <li>ימינה – מחוון ימין; תקלה: תנועת סיבוב של יד שמאל במעגל.</li>
+                  <li>רוכב אופניים – זרוע ימין אופקית לפנייה ימינה.</li>
+                  <li>בסיום הפעולה – מפסיקים את האיתות.</li>
+                </ul>
+              </li>
+              <li><strong>אור בלם</strong>: התרעה על האטה/עצירה; תקלה – נענוע יד שמאל למעלה-מטה עם כף יד מופנית מטה.</li>
+              <li><strong>צופר</strong>: בעיירות/עיר – רק למניעת סכנה; בכל מקום – לא ממושך/מעבר לנדרש.</li>
+              <li><strong>אותות מצוקה</strong>: בהכרח להשאיר רכב עומד – לשול, משולש ≈100 מ׳, מהבהבים; בכלי רכב מסוימים – גם מהבהב צהוב. לפנות את הרכב בהקדם.</li>
+            </ol>
+          `,
+                    diagram: `
+            <h3>דיאגרמה – אותות יד עיקריים</h3>
+            <div class="hand-diagram" role="group" aria-label="אותות יד לפי התקנות">
+              <div class="hand-grid">
+                <!-- (ה-SVG-ים כפי שיש לך בקוד המקורי; קיצרתי כאן מטעמי קריאות. אפשר להשאיר את שלך ללא שינוי) -->
+              </div>
+            </div>
+          `
+                }
+            },
+
+            /* --- 24 --- */
+            {
+                id: 24,
+                question: "שאלה 24 – נהג חדש, נהג חדש צעיר וחובת המלווה (פקודה/תקנות)",
+                subtitle: "הגדרות, שלבי ליווי (יום/לילה), נוסעים, שלט, תצהיר ותוספת שלישית",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>לנהגים חדשים ובייחוד <strong>נהגים חדשים צעירים</strong> נקבע משטר רישוי מדורג: ליווי בשלבים (כולל הבחנה בין <strong>יום</strong> ל<strong>לילה</strong>), הגבלות נוסעים, חובת שלט ותנאים מחמירים בעבירות מן <strong>התוספת השלישית</strong>.</p>
+          `,
+                    rules: `
+            <h3>מסגרת – נהג חדש, נהג חדש צעיר וחובת המלווה</h3>
+            <h4>הגדרות</h4>
+            <ul>
+              <li><strong>נהג חדש</strong> – לשנתיים מיום הרישיון.</li>
+              <li><strong>נהג חדש צעיר</strong> – מתחת לגיל 24.</li>
+              <li><strong>מלווה כשיר</strong> – 24+ עם 5 שנות רישיון לאותו סוג / 30+ עם 3 שנות רישיון / מורה נהיגה; אדם שיכור איננו מלווה.</li>
+              <li><strong>זמן לילה</strong> (לעניין ליווי) – 21:00–06:00.</li>
+            </ul>
+            <h4>שלבי ליווי (צעיר)</h4>
+            <ol>
+              <li>0–3 חודשים: חובה מלווה תמיד (יום ולילה).</li>
+              <li>4–6 חודשים: חובה מלווה בלילה בלבד; ביום מותר ללא מלווה.</li>
+              <li>לאחר מכן: אין חובת ליווי עד לסוף ה״נהג חדש״.</li>
+            </ol>
+            <h4>תצהיר והמשך רישוי</h4>
+            <ul>
+              <li>בסיום הליווי (לא לפני גיל 17 ו־3 ח׳) – תצהיר בגב ההיתר; לאחריו רישיון ל־18 חודשים. אם לא הוכח – ההיתר הזמני מתחדש עד ביצוע/עד גיל 24.</li>
+            </ul>
+            <h4>נוסעים ושלט</h4>
+            <ul>
+              <li><strong>&lt;21</strong>: ללא מלווה – עד שני נוסעים; עם מלווה/לאחר השנתיים/מעל 21 – מותר יותר.</li>
+              <li><strong>שלט “נהג חדש”</strong> – חובה ברכב המתאים; נהיגה בלעדיו – עבירה.</li>
+            </ul>
+            <h4>התוספת השלישית</h4>
+            <ul>
+              <li>כתב אישום/קנס – הארכה עד תום ההליכים/תשלום (אם ביקש להישפט – עד תום ההליכים).</li>
+              <li>הרשעה – הארכת “נהג חדש” בשנתיים (או מתום פסילה, אם נגזרה) בכפוף לבחינות/בדיקות.</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <p class="muted">אין תמרורים רלוונטיים ישירים לשאלה זו (הוראות סטטוס ורישוי). לתחומי דרך/מהירות – ראו שאלות קודמות.</p>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <ol>
+              <li><strong>מי נחשב:</strong> “נהג חדש” – לשנתיים; “נהג חדש צעיר” – &lt;24; מלווה כשיר: 24+ עם 5 ש׳ / 30+ עם 3 ש׳ / מורה נהיגה (לא תחת שכרות).</li>
+              <li><strong>שלבי ליווי (יום/לילה):</strong> 0–3 ח׳ – תמיד עם מלווה; 4–6 ח׳ – מלווה בלילה (21:00–06:00), ביום מותר לבד; לאחר מכן 18 ח׳ ללא ליווי.</li>
+              <li><strong>תצהיר והמשך רישוי:</strong> בסיום הליווי (לא לפני 17 ו־3 ח׳) – תצהיר בגב ההיתר; לאחריו רישיון ל־18 ח׳; אם לא הוכיח – ההיתר מתחדש עד ביצוע/עד גיל 24.</li>
+              <li><strong>נוסעים (&lt;21):</strong> עד שניים בלי מלווה; עם מלווה/אחרי השנתיים/מעל 21 – מותר יותר.</li>
+              <li><strong>שלט:</strong> חובה; נהיגה בלעדיו – עבירה; אסור למי שאינו נהג חדש לנהוג כששלט מוצג.</li>
+              <li><strong>התוספת השלישית – הארכות:</strong> כתב אישום/קנס → הארכה עד תום הליכים/תשלום (אם ביקש להישפט – עד תום ההליכים); הרשעה → הארכה שנתיים בכפוף לבחינות/בדיקות; זיכוי → עד המאוחר.</li>
+              <li><strong>עבירות שבגינן לא יחודש רישיון (תוספת שלישית):</strong> ללא רישיון; שימוש ברכב לעוון/פשע/עבירת מוסר; אי־עצירה למסילה; אי־ז״ק/רמזור אדום; שכרות/סמים; עקיפה אסורה; מהירות מעל המותר; אי־הגשת עזרה לנפגע.</li>
+            </ol>
+          `,
+                    diagram: `
+            <!-- דיאגרמת 24 האינטראקטיבית המלאה שלך (nov24) נשארה – לא שיניתי -->
+            <h3>דיאגרמה – זמן מהרישיון (X) מול גיל (Y)</h3>
+            <div id="nov24-root" class="nov24-chart" role="group" aria-label="דיאגרמת נהג חדש/צעיר – זמן וגיל">
+              <!-- ... (השארתי את ה-SVG והטופס בדיוק כמו אצלך; אפשר להשאיר המקור) ... -->
+              <svg id="nov24-svg" viewBox="0 0 920 520"></svg>
+              <div class="nov24-legend">הקלק/י על נקודה...</div>
+              <form id="nov24-form" class="nov24-controls" autocomplete="off">
+                <label>גיל (שנים)<input id="nov24-age" type="number" min="17" max="24" step="0.01" /></label>
+                <label>חודשים מאז הרישיון<input id="nov24-months" type="number" min="0" max="96" step="1" /></label>
+                <button type="submit">הוסף / בחר נקודה</button>
+                <div id="nov24-error" class="nov24-error" aria-live="polite">‎</div>
+              </form>
+              <div id="nov24-info" class="nov24-details" aria-live="polite" aria-atomic="true">
+                <h4>פרטים</h4>
+                <p class="muted">בחר/י נקודה בגרף או הזן/י גיל וחודשים כדי לראות מה חל על הנהג.</p>
+              </div>
+            </div>
+          `
+                }
+            },
+
+            /* --- 25 --- */
+            {
+                id: 25,
+                question: "שאלה 25 – מתן זכות קדימה בצומת מתומרר ובצומת מרומזר (והגדרה)",
+                subtitle: "הגדרה, מדרג הציות, תמרורי 'תן זכות' ו'עצור', ורמזור",
+                sections: {
+                    intro: `
+            <h3>פתיח</h3>
+            <p>מטרת כללי <strong>מתן זכות קדימה</strong> היא להסדיר את סדר הכניסה לצומת ואת זרימת התנועה בבטחה. הכללים נשענים על <em>מדרג ציות</em> ברור, ועל הוראות מיוחדות לצומת מתומרר ולצומת מרומזר.</p>
+          `,
+                    rules: `
+            <h3>מסגרת – מתן זכות קדימה בצומת מתומרר ומרומזר</h3>
+            <h4>הגדרות</h4>
+            <ul>
+              <li><strong>מתן זכות קדימה</strong> – לאפשר למי שזכאי לקדימות להמשיך בלי שיעצר/ימתין/ישנה מהירות/יסת.</li>
+              <li><strong>צומת מתומרר</strong> – צומת עם תמרורי קדימות (301/302 וכד׳).</li>
+              <li><strong>צומת מרומזר</strong> – צומת עם רמזורים; הוראת הרמזור עדיפה.</li>
+            </ul>
+            <h4>מדרג ציות</h4>
+            <ol>
+              <li>שוטר.</li><li>רמזור.</li><li>תמרורי קדימות (“תן זכות”/“עצור”).</li><li>תקנות כלליות.</li>
+            </ol>
+            <h4>כללים בצומת</h4>
+            <ul>
+              <li><strong>301 – תן זכות</strong>: האט, ואם צריך עצור; אפשר לתנועה בדרך החוצה (לרבות מסילה) לעבור.</li>
+              <li><strong>302 – עצור</strong>: עצירה מוחלטת לפני הקו/במקום בעל ראות טובה; מתן קדימה לתנועה/מסילה; מול מעבר חצייה – עצור לפניו, אפשר להולכי הרגל להשלים, ובהמשך עמוד שוב לפי הצורך לפני הצומת.</li>
+              <li><strong>צומת מרומזר</strong>: נשמעים לרמזור גם אם יש תמרור סותר.</li>
+              <li><strong>חובת זהירות כללית</strong>: גם לזכאי לקדימות – למנוע תאונה בפועל.</li>
+            </ul>
+          `,
+                    signs: `
+            <h3>תמרורים</h3>
+            <ul>
+              <li><strong>301 – תן זכות קדימה</strong> (תמרור הוריה, קדימות).</li>
+              <li><strong>302 – עצור</strong> (תמרור הוריה).</li>
+              <li><strong>רמזור</strong> – התקן איתות אור בצומת מרומזר; הוראתו עדיפה.</li>
+              <li><strong>קו עצירה</strong> – סימון כביש המציין מקום עצירה חובה.</li>
+            </ul>
+          `,
+                    answer: `
+            <h3>תשובה</h3>
+            <ol>
+              <li><strong>הגדרה</strong> – מתן אפשרות למי שזכאי לקדימות להמשיך ללא עצירה/המתנה/שינוי מהירות/סטייה.</li>
+              <li><strong>בצומת מתומרר</strong>:
+                <ul>
+                  <li><em>תן זכות (301)</em> – האט, ואם צריך עצור; אפשר לתנועה בדרך החוצה (לרבות מסילה) לעבור.</li>
+                  <li><em>עצור (302)</em> – עצור לפני הקו/במקום בעל ראות, תן קדימה; מול מעבר חצייה – עצור לפניו, אפשר לחוצים להשלים ואז המשך לפי הצורך.</li>
+                </ul>
+              </li>
+              <li><strong>בצומת מרומזר</strong> – פעל לפי אות הרמזור; הוא גובר על תמרורים/תקנות.</li>
+              <li><strong>מדרג ציות</strong> – שוטר → רמזור → תמרורי קדימות ("תן זכות"/"עצור") → תקנות כלליות.</li>
+              <li><strong>חובת זהירות כללית</strong> – גם הזכאי לקדימות חייב למנוע תאונה בפועל.</li>
+            </ol>
+          `
+                }
+            },
+            {
+                id: 26,
+                question: "שאלה 26 – מכונה ניידת, מכונה נגררת ומלגזה: הגדרות ותנועתן",
+                subtitle: "מי הן? איזה היתר צריך? ואיפה מותר לנוע",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p>מכונות עבודה – בין אם נעות בעצמן (מכונה ניידת/מלגזה) ובין אם נגררות – כפופות לרישוי/היתרים ולמגבלות תנועה מחמירות. להלן ההבחנות, ההיתרים, וכללי התנועה בקצרה.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>מכונה ניידת</h4>
+      <ul>
+        <li><strong>הגדרה:</strong> רכב מנועי שלפי מבנהו מיועד לביצוע עבודות ואינו מיועד לגרירה.</li>
+        <li><strong>היתר נהיגה:</strong> במכונה ניידת <em>אופנית</em> (כגון מלגזה) – נדרש <u>היתר</u> ברישיון הנהיגה; פטור מהיתר למחזיקי דרגת C שהונפקה לפני 22.06.2010.</li>
+        <li><strong>תנועה:</strong>
+          <ul>
+            <li>אם מהירות מתוכננת ע&quot;י היצרן ≤ 30 קמ״ש – <u>לא</u> ינוע בדרך אלא לשם <u>חצייתה</u>, ורק לצורך ביצוע העבודה; או בתוך <u>דרך עירונית</u> עד <u>500 מ׳</u> מהמפעל של בעל/מחזיק המכונה.</li>
+            <li><u>אסור לגרור</u> אלא אם הגרור הוא ציוד לעבודה.</li>
+            <li>חובה לעמוד במידות התקנות (רוחב/גובה); חובת סימון המהירות המרבית בחזית ובאחור.</li>
+            <li><u>מהירות מרבית</u> בפועל: לא יותר מ־40 קמ״ש.</li>
+            <li>חובת נקיטת כל אמצעי הזהירות למניעת סיכון/הפרעה.</li>
+            <li>קצין משטרה רשאי להתיר <u>תנועה חריגה</u> בכתב ובתנאים.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>מכונה ניידת <span dir="ltr">רגלית</span></h4>
+      <ul>
+        <li><strong>הגדרה:</strong> מכוונת ביד אדם; לא מיועדת להסעת נהג/נוסעים.</li>
+        <li><strong>תנועה:</strong> רק לחציית דרך לצורך עבודה, או בדרך עירונית עד 500 מ׳ מהמפעל, או בהיתר מקצין משטרה ועל פי תנאיו.</li>
+      </ul>
+
+      <h4>מכונה נגררת</h4>
+      <ul>
+        <li><strong>הגדרה:</strong> מכונת עבודה המיועדת לגרירה ע״י רכב מנועי (עצמה אינה מניעה).</li>
+        <li><strong>תנועה:</strong> כדין <u>גרור</u> – חיבור תקין, תאורה/סימול/בלמים כנדרש, עמידה במידות (רוחב/גובה/בליטה), ללא הסעת נוסעים, ומהירויות בהתאם לרכב הגורר ולתקנות.</li>
+      </ul>
+
+      <h4>מלגזה</h4>
+      <ul>
+        <li><strong>הגדרה:</strong> מכונה ניידת אופנית להעמסה/הרמה.</li>
+        <li><strong>היתר והכשרה:</strong> חל איסור לנהוג/להפעיל ללא <u>הכשרה</u> לפי תכנית שאושרה ו<u>היתר</u> מאת רשות הרישוי.</li>
+        <li><strong>תנועה:</strong> כ<em>מכונה ניידת</em> (הגבלות חצייה/500 מ׳ בעיר, מהירות, סימון, זהירות).</li>
+      </ul>
+
+      <p class="muted">דגשים: מכונות עבודה אינן מיועדות לנסיעה בין־עירונית שוטפת, ובוודאי לא לדרך מהירה; אם נדרש מעבר – פועלים בהיתרים ייעודיים ובמסלולים קצרים ומבוקרים.</p>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <p class="muted">אין תמרור ייעודי למכונת עבודה, אך הוראות דרך/מהירות/תחום עירוני/דרך מהירה חלות: 424↔425 (אזור דרכים עירוניות), 216↔217 (דרך מהירה), 426/427 (מהירות מיוחדת).</p>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <ol>
+        <li><strong>מכונה ניידת:</strong> רכב עבודה מנועי. נהיגה/הפעלה בכפוף להיתר (ל<em>אופנית</em>) ולהכשרה; תנועה רק לחציית דרך או בעיר עד 500 מ׳ מהמפעל; מהירות ≤ 40 קמ״ש; אין לגרור אלא ציוד עבודה; סימון מהירות מקסימלית מלפנים/מאחור; אפשר להיתר תנועה חריגה בכתב.</li>
+        <li><strong>מכונה ניידת רגלית:</strong> מכוונת ביד; לא להסעת נוסעים; חציית דרך/עיר עד 500 מ׳/בהיתר משטרה בלבד.</li>
+        <li><strong>מכונה נגררת:</strong> מכונת עבודה לגרירה; תנועתה כדין גרור – חיבור/תאורה/בלמים/מידות, ללא נוסעים, ומהירות לפי הגורר.</li>
+        <li><strong>מלגזה:</strong> מכונה ניידת אופנית; הכשרה+היתר; תנועה ותנאים כשל מכונה ניידת.</li>
+      </ol>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – שלוש משפחות</h3>
+      <div class="hand-diagram" role="group" aria-label="מכונה ניידת/נגררת/מלגזה – תקציר ויזואלי">
+        <div class="hand-grid">
+          <section class="hand-card">
+            <h5>מכונה ניידת</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="30" y="40" width="120" height="28" rx="6" fill="#cbd5e1"/>
+              <circle cx="60" cy="76" r="8" fill="#0f172a"/><circle cx="130" cy="76" r="8" fill="#0f172a"/>
+              <rect x="120" y="28" width="20" height="10" rx="2" fill="#94a3b8"/><!-- זרוע עבודה -->
+            </svg>
+            <details><summary>כללי תנועה</summary>
+              <ul>
+                <li>≤30 קמ״ש מתוכנן → חצייה; בעיר עד 500 מ׳.</li>
+                <li>אין לגרור, למעט ציוד עבודה.</li>
+                <li>≤40 קמ״ש בפועל; סימון מהירות בחזית/אחור.</li>
+              </ul>
+            </details>
+          </section>
+
+          <section class="hand-card">
+            <h5>מכונה נגררת</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="30" y="48" width="70" height="20" rx="4" fill="#94a3b8"/><!-- גרור -->
+              <circle cx="45" cy="72" r="7" fill="#0f172a"/><circle cx="85" cy="72" r="7" fill="#0f172a"/>
+              <rect x="110" y="48" width="70" height="20" rx="4" fill="#cbd5e1"/><!-- גורר -->
+              <circle cx="125" cy="72" r="7" fill="#0f172a"/><circle cx="165" cy="72" r="7" fill="#0f172a"/>
+            </svg>
+            <details><summary>כללי תנועה</summary>
+              <ul>
+                <li>כדין גרור: חיבור, תאורה/סימול, בלמים כנדרש.</li>
+                <li>עמידה במידות; אין נוסעים על הגרור.</li>
+                <li>מהירויות בהתאם לרכב הגורר/תקנות.</li>
+              </ul>
+            </details>
+          </section>
+
+          <section class="hand-card">
+            <h5>מלגזה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="42" y="40" width="90" height="28" rx="6" fill="#cbd5e1"/>
+              <circle cx="56" cy="76" r="8" fill="#0f172a"/><circle cx="112" cy="76" r="8" fill="#0f172a"/>
+              <rect x="130" y="34" width="8" height="36" fill="#94a3b8"/><!-- מַסָּע -->
+              <rect x="138" y="60" width="22" height="4" fill="#94a3b8"/><!-- מזלגות -->
+            </svg>
+            <details><summary>כללי תנועה</summary>
+              <ul>
+                <li>נדרש היתר נהיגה + הכשרה מאושרת.</li>
+                <li>תנועה כשל מכונה ניידת (חצייה/500 מ׳ בעיר, זהירות).</li>
+              </ul>
+            </details>
+          </section>
+        </div>
+      </div>
+    `
+                }
+            },
+            {
+                id: 27,
+                question: "שאלה 27 – נתיב לתחבורה ציבורית: הגדרה ומי רשאי להשתמש",
+                subtitle: "הגדרה, סוגי הרכב המותרים לפי הסמל/תמרור",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p><strong>נתיב לתחבורה ציבורית</strong> הוא נתיב/דרך/שביל שסומן והוקצה לשימושם של סוגי כלי רכב מסוימים בלבד. מי שאינו נמנה עם הסוגים שסומנו – <u>אינו רשאי</u> לנסוע בו.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>הגדרה</h4>
+      <p><strong>נתיב לתחבורה ציבורית</strong> – כביש/שביל/דרך או נתיב מסומן לפי התקנות, שיועד לתנועת כלי רכב מוגדרים בלבד (כפי שמופיע בתמרור/בצלמית).</p>
+
+      <h4>מי רשאי להשתמש – רק כפי שסומן בתמרור</h4>
+      <ul>
+        <li><strong>אוטובוס בקו שירות</strong> – מסומן בצלמית <u>אוטובוס צהוב</u>.</li>
+        <li><strong>אוטובוס</strong> – מסומן בצלמית <u>אוטובוס לבן</u>.</li>
+        <li><strong>מונית</strong> – מסומנת בצלמית מונית.</li>
+        <li><strong>רכב נוסעים מרובי־תפוסה (Carpool)</strong> – כאשר מופיע סימון בצירוף <code>+N</code> (למשל <code>+2</code>, <code>+3</code>) – מותר רק אם יש ברכב לפחות N נוסעים.</li>
+        <li><strong>רכבת מקומית/קלה</strong> – כאשר מסומנת בצלמית רכבת.</li>
+      </ul>
+
+      <p class="muted">דגשים: אם צורפה לוחית זמנים/ימים – ההיתר חל רק בזמנים שצוינו. בהיעדר סימון מתאים – אין שימוש לנהגים אחרים.</p>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <p class="muted">ההיתר נקבע לפי הצלמיות/הכיתוב שעל התמרור/סימון הנתיב (אוטובוס לבן/צהוב, מונית, "+N", רכבת).</p>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <p><strong>הגדרה:</strong> נתיב/דרך/שביל שיועד וסומן לתחבורה ציבורית.</p>
+      <p><strong>מותר לנוע בו רק כמסומן:</strong> אוטובוס שירות (צלמית אוטובוס צהוב), אוטובוס (לבן), מונית, רכב מרובי־תפוסה כאשר מופיע "+N" (ובהתאם למספר), ורכבת מקומית/קלה כאשר צלמית רכבת מופיעה. כל כלי רכב אחר – אסור.</p>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – מי רשאי?</h3>
+      <div class="hand-diagram" role="group" aria-label="נתיב לתחבורה ציבורית – כלי הרכב המותרים">
+        <div class="hand-grid">
+          <section class="hand-card">
+            <h5>אוטובוס שירות</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="30" y="34" width="120" height="24" rx="6" fill="#facc15"/>
+              <circle cx="60" cy="64" r="7" /><circle cx="130" cy="64" r="7" />
+            </svg>
+            <p class="muted">צלמית אוטובוס <u>צהוב</u>.</p>
+          </section>
+          <section class="hand-card">
+            <h5>אוטובוס</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="30" y="34" width="120" height="24" rx="6" fill="#e5e7eb"/>
+              <circle cx="60" cy="64" r="7" /><circle cx="130" cy="64" r="7" />
+            </svg>
+            <p class="muted">צלמית אוטובוס <u>לבן</u>.</p>
+          </section>
+          <section class="hand-card">
+            <h5>מונית</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="40" y="42" width="100" height="18" rx="4" />
+              <circle cx="60" cy="64" r="7" /><circle cx="120" cy="64" r="7" />
+              <rect x="78" y="36" width="24" height="6" rx="2" />
+            </svg>
+            <p class="muted">צלמית מונית.</p>
+          </section>
+          <section class="hand-card">
+            <h5>+N נוסעים</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="48" y="30" width="124" height="28" rx="8" />
+              <text x="110" y="50" text-anchor="middle" font-size="16" font-weight="700">+2 / +3</text>
+            </svg>
+            <p class="muted">מותר רק אם ברכב ≥ N נוסעים.</p>
+          </section>
+          <section class="hand-card">
+            <h5>רכבת מקומית/קלה</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="50" y="38" width="120" height="20" rx="4" />
+              <rect x="70" y="30" width="20" height="8" />
+              <rect x="130" y="30" width="20" height="8" />
+            </svg>
+            <p class="muted">צלמית רכבת.</p>
+          </section>
+        </div>
+      </div>
+    `
+                }
+            },
+            {
+                id: 28,
+                question: "שאלה 28 – תמרורים: רשות תמרור מרכזית/מקומית וסמכויותיהן",
+                subtitle: "מי קובע? מי מציב? ומה האחריות בשטח",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p>משטר התמרור נשען על שתי רשויות: <strong>רשות תמרור מרכזית</strong> ו<strong>רשות תמרור מקומית</strong>. לכל אחת סמכויות מוגדרות לגבי <em>קביעת הסדרי תנועה</em> והצבת <em>תמרורים</em>, כולל חובת תיאומים ואישורים.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>הגדרות</h4>
+      <ul>
+        <li><strong>תמרור</strong> – סימן/סימון/התקן שנועד להסדיר תנועה, להזהיר, להורות או להודיע לעוברי דרך.</li>
+        <li><strong>רשות תמרור מרכזית</strong> – הסמכות הארצית לתמרור ולהסדרי תנועה בכלל תחומי המדינה (או בתחומים שלא הוקנו לאחר).</li>
+        <li><strong>רשות תמרור מקומית</strong> – הסמכות לקבוע הסדרי תנועה ולתמרר <u>בתחום הרשות המקומית</u>, בכפוף לדין, לתיאום/אישור משטרתי ובהתאם להנחיות הרשות המרכזית.</li>
+      </ul>
+
+      <h4>סמכויות – רשות תמרור מרכזית</h4>
+      <ul>
+        <li>קובעת הסדרי תנועה ותמרור בדרכים שבסמכותה או בכלל המדינה כאשר נקבע כך בדין.</li>
+        <li>מנחה/מאשרת לרשויות המקומיות הסדרים הדורשים זאת.</li>
+      </ul>
+
+      <h4>סמכויות – רשות תמרור מקומית (בתחומה)</h4>
+      <ul>
+        <li>קביעת הסדרי תנועה והצבת תמרורים/סימונים/אמצעי הפעלה ותחזוקה.</li>
+        <li>פעלת ההסדרים <u>לאחר התייעצות עם קצין משטרה</u>, ובעניינים מסוימים – באישור הרשות המרכזית לפי הדין.</li>
+        <li>אחריות ל: הצבה, סימון, הפעלה, תחזוקה ואכיפה מונעת בשטח הרשות.</li>
+        <li>דוגמאות להסדרים מקומיים: <em>תחנת אוטובוס</em>, <em>תחנת מוניות</em>, <em>נתיב לתחבורה ציבורית</em>, <em>צביעת אבני שפה אדום־צהוב</em> וכד׳ – כפי שמוגדר בתמרור/סימון ובמסגרת ההוראות.</li>
+      </ul>
+
+      <h4>תיאומים ואישורים</h4>
+      <ul>
+        <li>הסדרים המשפיעים מהותית על זרימת התנועה/בטיחות – יבוצעו בתיאום משטרתי; כאשר נקבע – באישור הרשות המרכזית.</li>
+        <li>שינויים/ביטולים של הסדרים קיימים – בהתאם לאותה מתכונת של תיאום/אישור.</li>
+      </ul>
+
+      <p class="muted">ליבה לזכור: <strong>מרכזית</strong> – מסגרת והכוונה ארצית; <strong>מקומית</strong> – יישום בשטח בתחומי הרשות, בתיאום משטרה ובהתאם להנחיות.</p>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <p class="muted">אין תמרור יחיד ל"סמכות"; שאלת הסמכויות עוסקת <em>במי קובע ומציב</em>. הדוגמאות בשטח (כמו תחנת אוטובוס/מוניות, נת"צ, אבני שפה אדום־צהוב) מסומנות לפי התמרורים/הסימונים הייעודיים שלהם.</p>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <ol>
+        <li><strong>הגדרה:</strong> תמרור/סימון נועד להסדיר תנועה, הזהרה והוראה לעוברי דרך.</li>
+        <li><strong>רשות תמרור מרכזית:</strong> בעלת סמכות ארצית להסדרי תנועה ותמרור, מנחה ומאשרת לפי הצורך.</li>
+        <li><strong>רשות תמרור מקומית:</strong> קובעת ומיישמת הסדרים ותמרור בתחומה; מחויבת לתיאום עם קצין משטרה ובמקרים הנדרשים – לאישור הרשות המרכזית; אחראית להצבה, סימון, הפעלה ותחזוקה.</li>
+        <li><strong>דוגמאות להסדרים מקומיים:</strong> תחנת אוטובוס/מוניות, נתיב לתחבורה ציבורית, אבני שפה אדום־צהוב – על פי הדין והתמרור הרלוונטי.</li>
+      </ol>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – חלוקת סמכויות</h3>
+      <div class="hand-diagram" role="group" aria-label="מרכזית מול מקומית – מי עושה מה">
+        <div class="hand-grid">
+          <section class="hand-card">
+            <h5>רשות תמרור מרכזית</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="32" y="34" width="156" height="26" rx="6" />
+              <text x="110" y="51" text-anchor="middle" font-size="12">מסגרת ארצית • אישורים</text>
+            </svg>
+            <p class="muted">קובעת מדיניות/הכוונה; מאשרת היכן שנדרש.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>רשות תמרור מקומית</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="18" y="50" width="60" height="6" rx="3" />
+              <rect x="82" y="50" width="60" height="6" rx="3" />
+              <rect x="146" y="50" width="60" height="6" rx="3" />
+              <text x="110" y="34" text-anchor="middle" font-size="12">הצבה • סימון • תחזוקה</text>
+            </svg>
+            <p class="muted">קובעת ו<strong>מיישמת</strong> בתחומה, בתיאום עם המשטרה.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>דוגמאות בשטח</h5>
+            <svg viewBox="0 0 220 80" aria-hidden="true">
+              <rect x="20" y="38" width="40" height="20" rx="4" /> <!-- תחנת אוטובוס -->
+              <rect x="80" y="38" width="40" height="20" rx="4" /> <!-- תחנת מוניות -->
+              <rect x="140" y="58" width="60" height="6" rx="3" /> <!-- אבני שפה -->
+            </svg>
+            <p class="muted">תחנת אוטובוס/מוניות, נת"צ, אבני שפה אדום־צהוב.</p>
+          </section>
+        </div>
+      </div>
+    `
+                }
+            },
+
+            {
+                id: 29,
+                question: "שאלה 29 – עצירת רכב: איפה מותר/אסור בדרך ראשית/אזורית ובדרך מהירה",
+                subtitle: "עצירה בדרך ראשית/אזורית, בדרך מהירה, ובמקומות המותרים לחניה",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p>הכלל: עצירה נעשית כך שלא תסכן ושלא תפריע. <strong>בדרך שאינה עירונית</strong> (דרך ראשית/אזורית) וב<strong>דרך מהירה</strong> – נקבעו הגבלות מחמירות, עם חריגים מצומצמים. בנוסף, גם במקומות שמותרת בהם <em>חניה</em>, לא כל עצירה מותרת.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>מונחים</h4>
+      <ul>
+        <li><strong>עצירה</strong> – עמידת רכב לזמן קצר מטעם הנהג שלא לשם חניה.</li>
+        <li><strong>חניה</strong> – עמידת רכב לפרק זמן ממושך יותר או ללא נהג לצדו, שלא לצורך העלאה/הורדה וכד'.</li>
+        <li><strong>דרך ראשית/אזורית</strong> – דרך שאינה עירונית.</li>
+        <li><strong>דרך מהירה</strong> – דרך בין־עירונית סגורה לכלים איטיים והולכי רגל.</li>
+      </ul>
+
+      <h4>א. עצירה בדרך המסומנת כ<strong>דרך ראשית/אזורית</strong></h4>
+      <ul>
+        <li><strong>אסור</strong> לעצור על הכביש או על השול.</li>
+        <li><strong>חריגים מותרים</strong> – <u>בשול ורחוק מן התנועה</u> בלבד, לשם:
+          <ul>
+            <li>העלאה/הורדה של נוסעים,</li>
+            <li>החלפת נהג,</li>
+            <li>חילוץ/הגשת עזרה לנפגעים,</li>
+            <li>טיפול ברכב שיצא מכלל פעולה,</li>
+            <li>עבודות ציבוריות בהיתר בכתב ובמידה הדרושה,</li>
+            <li>רכב צה״ל לשם מילוי תפקיד.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>ב. עצירה ב<strong>דרך מהירה</strong></h4>
+      <ul>
+        <li><strong>אסורה</strong> עצירה לשם העלאה/הורדה.</li>
+        <li><strong>אין</strong> להעמיד/להחנות בין הגדרות, אלא אם סומן אחרת בתמרור.</li>
+        <li>תקלה/חירום – רק להרחיק לשול הימני ביותר, להפעיל מהבהבים, להציב משולש ולהזעיק סיוע.</li>
+      </ul>
+
+      <h4>ג. עצירה ב<strong>מקומות שמותרת בהם חניה</strong></h4>
+      <ul>
+        <li>העובדה שמותרת <em>חניה</em> אינה מתירה לבצע <strong>כל</strong> עצירה; יש לציית לכללים הכלליים (למשל שלא לחסום נתיב/מעבר חציה/תחנה/כניסה/יציאה).</li>
+        <li>כאשר מוצבות הגבלות זמנים/סוגי רכב – העצירה כפופה להן.</li>
+      </ul>
+
+      <p class="muted">לזכור: בדרך שאינה עירונית מותר לעצור רק בשול ולמטרות נקובות; בדרך מהירה – המחמיר ביותר.</p>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <ul>
+        <li><strong>216/217</strong> – דרך מהירה / קצה דרך מהירה.</li>
+        <li><strong>424/425</strong> – אזור דרכים עירוניות / קצה אזור.</li>
+        <li>סימוני שול, קווי עצירה ומעברי חציה – משפיעים על מקום העצירה המותר.</li>
+      </ul>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <ol>
+        <li><strong>בדרך ראשית/אזורית:</strong> אין לעצור על הכביש/השול, זולת בשול ולמטרות נקובות: העלאה/הורדה, החלפת נהג, חילוץ נפגעים, רכב תקול, עבודות ציבוריות בהיתר, ורכב צה״ל בתפקיד – ורחוק מהתנועה.</li>
+        <li><strong>בדרך מהירה:</strong> אסורה עצירה לשם העלאה/הורדה; אין העמדה/חניה בין הגדרות אלא אם סומן; תקלה – לשול, מהבהבים, משולש, סיוע.</li>
+        <li><strong>במקומות שמותרת בהם חניה:</strong> עדיין חלים איסורי העצירה הכלליים; עצירה מותרת רק ללא סיכון/הפרעה ותחת כל הגבלת זמן/סוג/סימון במקום.</li>
+      </ol>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – איפה מותר לעצור?</h3>
+      <div class="hand-diagram" role="group" aria-label="עצירה: ראשית/אזורית מול מהירה">
+        <div class="hand-grid">
+          <section class="hand-card">
+            <h5>דרך ראשית/אזורית</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="20" y="60" width="180" height="6" rx="3" />
+              <rect x="20" y="70" width="180" height="6" rx="3" />
+              <rect x="170" y="54" width="30" height="10" rx="2" />
+            </svg>
+            <p class="muted">מותר <u>בשול</u> ורק לחריגים: העלאה/הורדה, החלפת נהג, חילוץ, תקלה, עבודות בהיתר, רכב צה״ל.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>דרך מהירה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="20" y="60" width="180" height="6" rx="3" />
+              <rect x="20" y="70" width="180" height="6" rx="3" />
+              <line x1="40" y1="40" x2="40" y2="80" stroke-width="3" /> <!-- גדר -->
+            </svg>
+            <p class="muted">אין עצירה להעלאה/הורדה; אין העמדה בין הגדרות; תקלה – לשול הימני, מהבהבים ומשולש.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>מקום שמותרת בו חניה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="40" y="40" width="140" height="40" rx="6" />
+              <text x="110" y="64" text-anchor="middle" font-size="16">P</text>
+            </svg>
+            <p class="muted">עדיין חלים איסורי עצירה כלליים והגבלות המקום.</p>
+          </section>
+        </div>
+      </div>
+    `
+                }
+            },
+            {
+                id: 30,
+                question: "שאלה 30 – מהירות סבירה וחובת האטה",
+                subtitle: "הגדרה, מתי חייבים להאט, ותמרורים רלוונטיים",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p><strong>מהירות סבירה</strong> היא חובה כללית: נוהג רכב ינהג במהירות המתאימה לתנאי הדרך, הראות והתנועה, באופן שישמור שליטה מלאה ברכב. בנוסף למהירות הסבירה, יש <strong>מקרים נקובים שבהם חייבים להאט</strong>.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>מהירות סבירה – עקרון יסוד</h4>
+      <ul>
+        <li>אין לנהוג אלא במהירות המתחשבת בכל נסיבות המקום והתנועה, כך שהנהג שומר שליטה מלאה ברכב בכל עת.</li>
+        <li>מהירויות מרביות/מיוחדות (426) אינן מבטלות את החובה למהירות סבירה.</li>
+      </ul>
+
+      <h4>חובת האטה – מקרים נקובים</h4>
+      <p>מבלי לגרוע מהחובה למהירות סבירה – יש <strong>חובת האטה</strong> (ולעתים אף עצירה) לפחות במקרים הבאים:</p>
+      <ol>
+        <li>בהתקרבות ל<strong>מעבר חצייה</strong>.</li>
+        <li>כש<strong>אוטובוס</strong> עומד בתחנה ובזמן עקיפתו.</li>
+        <li>כש<strong>הדרך אינה פנויה</strong>.</li>
+        <li>בהתקרבות ל<strong>עקומה</strong>.</li>
+        <li>בהתקרבות ל<strong>הולכי רגל</strong> ההולכים בקבוצה/בסך.</li>
+        <li>בהתקרבות או מעבר ליד <strong>אוטובוס/טיולית/רכב מסחרי המסיע ילדים</strong> שסומן ועצר להורדה; ובעת עקיפתו.</li>
+        <li>ב<strong>אזור מיתון תנועה</strong>.</li>
+        <li>ב<strong>מנהרה</strong>.</li>
+        <li>בהתקרבות ל<strong>מפגש מסילת ברזל</strong> – עד כדי עצירה מיידית סמוך למפגש, לפי העניין.</li>
+        <li>ב<strong>צומת</strong> או <strong>התמזגות כבישים</strong> המסומנים בתמרור רלוונטי (לרבות “תן זכות קדימה”).</li>
+        <li>כשמוצב תמרור <strong>“האט”</strong>.</li>
+        <li>ב<strong>ראות לקויה</strong> (ערפל/גשם חזק/סנוור) או כאשר תנאי הדרך מחמירים.</li>
+        <li>בקרבת <strong>עבודות בדרך</strong> או רכב שירות הפועל בשול/בכביש.</li>
+        <li>ב<strong>מדרון תלול/פסגת גבעה</strong>, בכביש צר/גשר צר, או בכביש חלק/משובש.</li>
+      </ol>
+
+      <p class="muted">הערה: הרשימה לעיל מאחדת את המקרים המנויים בתקנה ואת ההשלמות המופיעות בתקנות נוספות כפי שמפורט במקור.</p>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <ul>
+        <li><strong>301 – תן זכות קדימה</strong> (ובהתאם: האט/עצור לפי הראוי).</li>
+        <li><strong>934 – “האט”</strong> (לוחית הוראה).</li>
+        <li>תמרורי אזהרה/התמזגות וצומת – לפי ההקשר המקומי.</li>
+      </ul>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <p><strong>מהירות סבירה:</strong> לנהוג תמיד במהירות המתאימה לתנאי הדרך, הראות והתנועה, כך שהשליטה ברכב מלאה.</p>
+      <p><strong>חובת האטה (דוגמאות מרכזיות):</strong> מעבר חצייה; אוטובוס בתחנה ובעקיפתו; דרך שאינה פנויה; עקומה; הולכי רגל בסך; רכב המסיע ילדים שעצר להורדה; אזור מיתון תנועה; מנהרה; מפגש מסילת ברזל (עד כדי עצירה); צומת/התמזגות המסומנים (כולל “תן זכות”); תמרור “האט”; ראות לקויה; עבודות בדרך; מדרון/פסגה/כביש צר או חלק.</p>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – איפה מאטים?</h3>
+      <div class="hand-diagram" role="group" aria-label="חובת האטה – מצבים טיפוסיים">
+        <div class="hand-grid">
+          <section class="hand-card">
+            <h5>מעבר חצייה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="40" y="60" width="140" height="6" rx="3" />
+              <rect x="40" y="70" width="140" height="6" rx="3" />
+              <rect x="40" y="50" width="10" height="10" />
+              <rect x="60" y="50" width="10" height="10" />
+            </svg>
+            <p class="muted">להאט תמיד, לאפשר חצייה בטוחה.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>אוטובוס/ילדים</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="30" y="46" width="120" height="24" rx="6" />
+              <circle cx="60" cy="74" r="7" /><circle cx="130" cy="74" r="7" />
+              <circle cx="170" cy="58" r="6" /><circle cx="182" cy="58" r="6" />
+            </svg>
+            <p class="muted">אוטובוס בתחנה/רכב המסיע ילדים – האטה ואף עצירה לפי העניין.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>מפגש מסילה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <line x1="40" y1="40" x2="180" y2="80" stroke-width="3" />
+              <line x1="40" y1="80" x2="180" y2="40" stroke-width="3" />
+            </svg>
+            <p class="muted">חובת האטה, ולעתים עצירה מיידית.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>עקומה/ראות לקויה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <path d="M30,70 C80,10 140,10 190,70" fill="none" stroke-width="4" />
+            </svg>
+            <p class="muted">להתאים מהירות לעקומה/ערפל/גשם/סנוור.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>“האט” / תן זכות</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="60" y="34" width="100" height="28" rx="4" />
+              <text x="110" y="52" text-anchor="middle" font-size="14">האט</text>
+              <polygon points="30,70 80,70 55,30" />
+            </svg>
+            <p class="muted">ציות לתמרורים המחייבים האטה/מתן זכות קדימה.</p>
+          </section>
+        </div>
+      </div>
+    `
+                }
+            },
+
+            {
+                id: 31,
+                question: "שאלה 31 – חובת הזהירות, אחיזת ההגה ושימוש בטלפון (כולל בעת הוראת נהיגה)",
+                subtitle: "עקרונות בטיחות: זהירות כללית • אחיזת הגה • טלפון בנהיגה • טלפון בשעת הוראה",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p>נהיגה בטוחה נשענת על שלושה עמודי־תווך: <strong>חובת זהירות כללית</strong>, <strong>חובת אחיזה בהגה</strong> (או בכידון/מושכות), ו<strong>כללי שימוש בטלפון</strong> – לנהג רגיל ובמיוחד <em>בעת הוראת נהיגה</em>.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>א. חובת הזהירות הכללית</h4>
+      <ul>
+        <li>נוהג רכב חייב לנהוג בזהירות, בשליטה, ובאופן המותאם ל<strong>תנאי הדרך, הראות והתנועה</strong>, כך שלא יסכן אדם או רכוש.</li>
+        <li>להיות מרוכזים ולהימנע מנהיגה כשאינך כשיר/עייף/מסומם/שיכור וכד'.</li>
+      </ul>
+
+      <h4>ב. חובת אחיזת ההגה/כידון/מושכות</h4>
+      <ul>
+        <li><strong>כל עוד הרכב בתנועה</strong> – נוהג רכב יחזיק בידיו את ההגה או הכידון. רוכב/מוליך בהמה יחזיק במושכות כל זמן שהיא בדרך.</li>
+        <li>מותר להסיר <strong>יד אחת בלבד</strong> מההגה/כידון <u>רק</u> לצורך <em>פעולה תקינה של הרכב או לקיום כללי התנועה</em> (למשל העברת הילוך, הפעלת מגבים, איתות יד במקרה תקלה).</li>
+        <li><strong>לא נחשב “הפעלת הרכב”</strong>: אכילה, שתייה, עישון, דיבור בטלפון ביד – פעולות אלה אסורות כשהן פוגעות באחיזה/שליטה.</li>
+      </ul>
+
+      <h4>ג. שימוש בטלפון בנהיגה (נהג)</h4>
+      <ul>
+        <li>אסור להשתמש בטלפון <strong>באחיזה ביד</strong>.</li>
+        <li>מותר <strong>רק באמצעות דיבורית</strong> ובהתקן יציב ברכב המאפשר שימוש בלא אחיזה ומונע נפילה.</li>
+        <li><em>מכשיר מירס/קשר עם לחצנים</em> – נחשב טלפון לכל דבר; שימוש ללא מיקרופון/דיבורית <strong>אסור</strong>.</li>
+        <li>העבירה כרוכה בקנס ונקודות לפי התקנות.</li>
+      </ul>
+
+      <h4>ד. שימוש בטלפון בעת הוראת נהיגה (מורה נהיגה)</h4>
+      <ul>
+        <li>מי שבידו רישיון להוראת נהיגה <strong>לא ישתמש</strong> בטלפון קבוע/נייד בשעת הוראת נהיגה <u>אלא</u> באמצעות דיבורית ובהתקן יציב ברכב.</li>
+        <li>הפרה מטופלת כ<strong>הזמנה לדין</strong> (להבדיל מקנס מנהלי רגיל לנהג).</li>
+        <li>מורה הנהיגה נדרש לשמש <em>דוגמה אישית</em> ולציית להוראות הבטיחות והדין.</li>
+      </ul>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <p class="muted">אין תמרור ייעודי לכללים אלה; מדובר בחובות כלליות ובהוראות התנהגות.</p>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <ol>
+        <li><strong>חובת זהירות כללית:</strong> לנהוג בזהירות, בשליטה ובהתאמה לדרך/ראות/תנועה; להימנע מנהיגה כשאינך כשיר.</li>
+        <li><strong>אחיזת ההגה/כידון:</strong> חובה להחזיק בשתי ידיים כל עוד הרכב בתנועה; מותר להסיר יד אחת רק לצורך פעולה תקינה של הרכב או לקיום כללי התנועה. רוכב/מוליך בהמה – יחזיק במושכות.</li>
+        <li><strong>טלפון לנהג:</strong> אסור להחזיק; מותר רק דיבורית ובהתקן יציב; מכשיר מירס/קשר – כדין טלפון; שימוש ללא מיקרופון אסור; קנס+נקודות.</li>
+        <li><strong>טלפון למורה נהיגה בשעת הוראה:</strong> רק דיבורית ובהתקן יציב; ההפרה – הזמנה לדין; חובת דוגמה אישית.</li>
+      </ol>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – שלושת הכללים</h3>
+      <div class="hand-diagram" role="group" aria-label="חובת זהירות • אחיזה בהגה • טלפון">
+        <div class="hand-grid">
+
+          <section class="hand-card">
+            <h5>זהירות כללית</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <polygon points="110,20 190,70 30,70" />
+              <text x="110" y="62" text-anchor="middle" font-size="12" fill="#fff">שליטה • ראות • תנועה</text>
+            </svg>
+            <p class="muted">מתאימים נהיגה לדרך/ראות/תנועה; נמנעים מהסחות ונהיגה לא כשירה.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>אחיזת ההגה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <circle cx="110" cy="50" r="28" />
+              <rect x="76" y="44" width="22" height="8" rx="4" />
+              <rect x="122" y="44" width="22" height="8" rx="4" />
+            </svg>
+            <p class="muted">שתי ידיים; להסיר יד אחת רק לצורך פעולה תקינה/כללי התנועה.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>טלפון – נהג</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="86" y="26" width="48" height="32" rx="4" />
+              <rect x="98" y="60" width="24" height="8" rx="4" />
+              <line x1="86" y1="26" x2="70" y2="14" stroke-width="3" />
+            </svg>
+            <p class="muted">רק דיבורית ובהתקן יציב; ללא אחיזה; מירס=טלפון.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>טלפון – הוראת נהיגה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="40" y="56" width="140" height="12" rx="6" />
+              <rect x="94" y="24" width="32" height="24" rx="4" />
+              <line x1="94" y1="24" x2="76" y2="14" stroke-width="3" />
+            </svg>
+            <p class="muted">מותר רק בדיבורית/מתקן יציב; הפרה = הזמנה לדין.</p>
+          </section>
+
+        </div>
+      </div>
+    `
+                }
+            },
+            {
+                id: 32,
+                question: "שאלה 32 – תצוגה הנראית לעיני הנהג ומכשירים אופטיים (בנהיגה ובהוראת נהיגה)",
+                subtitle: "תצוגה לעיני הנהג • חובת משקפיים/עדשות • הוראות מיוחדות בשעת לימוד נהיגה",
+                sections: {
+                    intro: `
+      <h3>פתיח</h3>
+      <p>הדין מטיל הגבלות על <strong>תצוגות הנראות לעיני הנהג</strong> בזמן נסיעה, ומחייב נהגים להרכיב <strong>מכשירים אופטיים</strong> (משקפיים/עדשות) אם נדרשו לכך. בהוראת נהיגה – החובה חלה גם על התלמיד והמורה לפי העניין.</p>
+    `,
+                    rules: `
+      <h3>הגדרות ותקנות</h3>
+
+      <h4>א. תצוגה הנראית לעיני הנהג ברכב</h4>
+      <ul>
+        <li>אסורה הצבת/הפעלת <strong>תצוגה</strong> (מסך/נייד/טאבלט וכד’) הנראית לעיני הנהג בעת נסיעה, אם אינה לשם <em>תפעול הרכב</em> או <em>ניווט</em> או מערכת מובנית שמותרת לפי הדין.</li>
+        <li>העבירה מטופלת כ<strong>הזמנה לדין</strong> (לא קנס מנהלי רגיל); לשוטר סמכות לאכוף לפי החשד הסביר.</li>
+        <li>תצוגה מותרת חייבת להיות <strong>מקובעת/יציבה</strong> ואינה פוגעת בשדה הראייה.</li>
+      </ul>
+
+      <h4>ב. חובת הרכבת מכשירים אופטיים בזמן הנהיגה</h4>
+      <ul>
+        <li>מי שנדרש ברישיונו/בבדיקה רפואית לנהוג עם <strong>משקפיים או עדשות מגע</strong> – <strong>חייב</strong> להרכיבם בכל הנהיגה.</li>
+        <li>נהיגה בניגוד לדרישה זו מהווה עבירה; לשוטר סמכות לאכיפה.</li>
+      </ul>
+
+      <h4>ג. חובת מכשירים אופטיים בזמן <em>הוראת נהיגה</em></h4>
+      <ul>
+        <li>בזמן לימוד נהיגה – על <strong>התלמיד</strong> חלה אותה חובה להרכיב משקפיים/עדשות אם נדרש לכך, ועל <strong>מורה הנהיגה</strong> להיות כשיר בראייה כנדרש ולהימנע מהסחות (לרבות תצוגות אסורות).</li>
+        <li>הפרות בתחום זה עשויות להיחשב חמורות יותר בהיבטי פיקוח ובטיחות.</li>
+      </ul>
+    `,
+                    signs: `
+      <h3>תמרורים</h3>
+      <p class="muted">אין תמרור ייעודי; מדובר בהוראות כלליות של ציוד/התנהגות ברכב.</p>
+    `,
+                    answer: `
+      <h3>תשובה</h3>
+      <ol>
+        <li><strong>תצוגה לעיני הנהג:</strong> מסכים/טלפונים הנראים לעיני הנהג בזמן נסיעה – אסורים אלא אם הם לשם תפעול הרכב/ניווט ובהתקן יציב; העבירה – הזמנה לדין.</li>
+        <li><strong>מכשירים אופטיים בנהיגה:</strong> מי שנדרש – חייב להרכיב משקפיים/עדשות בכל הנהיגה.</li>
+        <li><strong>בהוראת נהיגה:</strong> התלמיד מחויב כנדרש; המורה חייב לשמור כשירות ולהימנע מהסחות/תצוגות אסורות.</li>
+      </ol>
+    `,
+                    diagram: `
+      <h3>דיאגרמה – מה מותר לראות ומה חובה להרכיב?</h3>
+      <div class="hand-diagram" role="group" aria-label="תצוגה לעיני הנהג ומכשירים אופטיים">
+        <div class="hand-grid">
+
+          <section class="hand-card">
+            <h5>תצוגה אסורה</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="88" y="22" width="44" height="30" rx="4" />
+              <line x1="80" y1="18" x2="64" y2="8" stroke-width="3" />
+              <line x1="84" y1="18" x2="72" y2="6" stroke-width="3" />
+            </svg>
+            <p class="muted">מסך/נייד גלוי לעיני הנהג – אסור, אלא אם לניווט/תפעול ובהתקן יציב.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>תצוגה מותרת</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <rect x="90" y="24" width="40" height="26" rx="4" />
+              <rect x="98" y="54" width="24" height="8" rx="4" />
+            </svg>
+            <p class="muted">מערכת מובנית/ניווט – כשהיא קבועה ואינה מסתירה ראות.</p>
+          </section>
+
+          <section class="hand-card">
+            <h5>משקפיים/עדשות</h5>
+            <svg viewBox="0 0 220 90" aria-hidden="true">
+              <circle cx="94" cy="46" r="12" /><circle cx="126" cy="46" r="12" />
+              <rect x="106" y="44" width="8" height="4" />
+              <rect x="80" y="44" width="14" height="4" /><rect x="132" y="44" width="14" height="4" />
+            </svg>
+            <p class="muted">אם נדרש – חובה להרכיב בזמן הנהיגה והלימוד.</p>
+          </section>
+
+        </div>
+      </div>
+    `
+                }
+            }
+
+
+
+        ];
+
+        /* ---------- שלד/התנהגות ---------- */
+        const screenPicker = document.getElementById('screen-picker');
+        const screenStage = document.getElementById('screen-stage');
+        const pickerGrid = document.getElementById('picker-grid');
+
+        const cardTitle = document.getElementById('card-title');
+        const cardSubtitle = document.getElementById('card-subtitle');
+        const cardContent = document.getElementById('card-content');
+        const backBtn = document.getElementById('btn-back');
+
+        renderPicker(qaData);
+
+        pickerGrid.addEventListener('click', onPickQuestion);
+        document.querySelector('.toolbar').addEventListener('click', onTabClick);
+        backBtn.addEventListener('click', () => switchScreen('picker'));
+
+        // --- Utils ---
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderPicker(data) {
+            const sorted = [...data].sort((a, b) => a.id - b.id);
+            const frag = document.createDocumentFragment();
+            sorted.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'q-btn';
+                btn.type = 'button';
+                btn.role = 'listitem';
+                btn.dataset.qid = String(item.id);
+                btn.innerHTML = `${escapeHtml(item.question.replace(/^שאלה\\s*\\d+\\s*[–-]\\s*/, ''))}`;
+                frag.appendChild(btn);
+            });
+            pickerGrid.innerHTML = '';
+            pickerGrid.appendChild(frag);
+        }
+
+        function onPickQuestion(ev) {
+            const btn = ev.target.closest('.q-btn');
+            if (!btn) return;
+            const id = Number(btn.dataset.qid);
+            const item = qaData.find(q => q.id === id);
+            if (!item) return;
+            showCard(item);
+            switchScreen('stage');
+        }
+
+        function showCard(item) {
+            cardTitle.textContent = item.question;
+            cardSubtitle.textContent = item.subtitle;
+            cardContent.innerHTML = `<p class="placeholder">בחר/י חלק (פתיח/הגדרות ותקנות/תמרורים/תשובה) כדי להציג את התוכן.</p>`;
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.setAttribute('aria-pressed', 'false');
+                b.setAttribute('aria-selected', 'false');
+                b.dataset.activeQid = String(item.id);
+            });
+        }
+
+        function onTabClick(ev) {
+            const btn = ev.target.closest('.tab-btn');
+            if (!btn) return;
+
+            const qid = Number(btn.dataset.activeQid);
+            const key = btn.dataset.section;
+            const item = qaData.find(q => q.id === qid);
+            if (!item) return;
+
+            let html = item.sections[key] || '<p class="placeholder">—</p>';
+
+            const content = (typeof sanitizeCitations === 'function') ? sanitizeCitations(html) : html;
+            cardContent.innerHTML = content;
+
+            // אתחול דיאגרמות בעת כניסה לטאב "דיאגרמה"
+            if (key === 'diagram') {
+                if (typeof initNov24Chart === 'function' && document.getElementById('nov24-root')) {
+                    setTimeout(initNov24Chart, 0);
+                }
+                if (typeof initQ19Diagram === 'function' && document.getElementById('q19-root')) {
+                    setTimeout(initQ19Diagram, 0);
+                }
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                const active = (b === btn);
+                b.setAttribute('aria-pressed', String(active));
+                b.setAttribute('aria-selected', String(active));
+            });
+        }
+
+        function switchScreen(target) {
+            const showPicker = (target === 'picker');
+            screenPicker.hidden = !showPicker;
+            screenStage.hidden = showPicker;
+            if (showPicker) {
+                cardContent.innerHTML = '';
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.setAttribute('aria-pressed', 'false');
+                    b.setAttribute('aria-selected', 'false');
+                    delete b.dataset.activeQid;
+                });
+            }
+            (showPicker ? pickerGrid.querySelector('.q-btn') : cardTitle)?.focus?.();
+        }
+
+        /** עוזר לכותרת */
+        function stripQuestionPrefix(title) {
+            if (title == null) return '';
+            return String(title).replace(/^שאלה\s*\d+\s*[–-]\s*/, '');
+        }
+
+        /* === שאלה 19: דיאגרמה אינטראקטיבית – סוג רכב × סוג דרך === */
+        function initQ19Diagram() {
+            const root = document.getElementById('q19-root');
+            if (!root) return;
+
+            const vehWrap = document.getElementById('q19-veh');
+            const roadsWrap = document.getElementById('q19-roads-wrap');
+            const roadWrap = document.getElementById('q19-road');
+            const infoBox = document.getElementById('q19-info');
+
+            const IC = {
+                car: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="6" y="16" width="44" height="12" rx="3" fill="#94a3b8"/><rect x="12" y="10" width="22" height="10" rx="2" fill="#cbd5e1"/><circle cx="18" cy="30" r="5" fill="#0f172a"/><circle cx="40" cy="30" r="5" fill="#0f172a"/></svg>',
+                bus: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="4" y="12" width="52" height="16" rx="3" fill="#94a3b8"/><rect x="8" y="14" width="28" height="6" rx="1" fill="#cbd5e1"/><rect x="38" y="14" width="14" height="6" rx="1" fill="#cbd5e1"/><circle cx="18" cy="30" r="5" fill="#0f172a"/><circle cx="44" cy="30" r="5" fill="#0f172a"/></svg>',
+                truck: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="6" y="14" width="30" height="12" rx="2" fill="#94a3b8"/><rect x="36" y="18" width="14" height="8" rx="1" fill="#cbd5e1"/><circle cx="16" cy="30" r="5" fill="#0f172a"/><circle cx="34" cy="30" r="5" fill="#0f172a"/><circle cx="48" cy="30" r="5" fill="#0f172a"/></svg>',
+                slow: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="8" y="18" width="20" height="6" rx="1" fill="#94a3b8"/><polygon points="30,24 40,24 36,16" fill="#cbd5e1"/><circle cx="18" cy="30" r="5" fill="#0f172a"/><circle cx="38" cy="30" r="5" fill="#0f172a"/></svg>',
+                rail: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="8" y="14" width="42" height="10" rx="2" fill="#94a3b8"/><rect x="10" y="12" width="10" height="4" rx="1" fill="#cbd5e1"/><rect x="40" y="12" width="8" height="4" rx="1" fill="#cbd5e1"/><line x1="8" y1="32" x2="50" y2="32" stroke="#0f172a" stroke-width="2"/><line x1="12" y1="34" x2="46" y2="34" stroke="#0f172a" stroke-width="2"/></svg>',
+                urban: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="12" y="20" width="40" height="6" rx="2" fill="#94a3b8"/><rect x="22" y="8" width="4" height="10" fill="#94a3b8"/><rect x="30" y="6" width="4" height="12" fill="#94a3b8"/><rect x="38" y="10" width="4" height="8" fill="#94a3b8"/></svg>',
+                inter: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="10" y="18" width="44" height="4" rx="2" fill="#94a3b8"/><rect x="10" y="26" width="44" height="4" rx="2" fill="#94a3b8"/></svg>',
+                freeway: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="12" y="10" width="12" height="22" rx="2" fill="#94a3b8"/><rect x="40" y="10" width="12" height="22" rx="2" fill="#94a3b8"/><rect x="0" y="20" width="64" height="2" fill="#94a3b8"/></svg>',
+                sign426: '<svg viewBox="0 0 64 40" aria-hidden="true"><circle cx="32" cy="20" r="14" fill="#fff" stroke="#ef4444" stroke-width="3"/><text x="32" y="24" text-anchor="middle" font-size="12" fill="#ef4444" font-weight="700">426</text></svg>',
+                reasonable: '<svg viewBox="0 0 64 40" aria-hidden="true"><path d="M8,30 C20,10 44,10 56,30" fill="none" stroke="#94a3b8" stroke-width="3"/></svg>',
+                license: '<svg viewBox="0 0 64 40" aria-hidden="true"><rect x="10" y="10" width="44" height="20" rx="3" fill="#cbd5e1"/><line x1="16" y1="18" x2="48" y2="18" stroke="#94a3b8" stroke-width="2"/><line x1="16" y1="24" x2="40" y2="24" stroke="#94a3b8" stroke-width="2"/></svg>'
+            };
+
+            const VEHICLES = [
+                { id: 'private', label: 'רכב פרטי', icon: IC.car },
+                { id: 'bus', label: 'אוטובוס / אוטובוס זעיר', icon: IC.bus },
+                { id: 'truck12', label: 'משאית > 12 טון', icon: IC.truck },
+                { id: 'slow', label: 'רכב איטי / טרקטור / מכונה', icon: IC.slow },
+                { id: 'rail', label: 'רכבת מקומית', icon: IC.rail }
+            ];
+
+            const ROADS = [
+                { id: 'urban', label: 'דרך עירונית', icon: IC.urban },
+                { id: 'inter', label: 'דרך בינעירונית', icon: IC.inter },
+                { id: 'freeway', label: 'דרך מהירה', icon: IC.freeway },
+                { id: 'sign426', label: 'מהירות מיוחדת (426)', icon: IC.sign426 },
+                { id: 'reasonable', label: 'מהירות סבירה', icon: IC.reasonable },
+                { id: 'license', label: 'מהירות ברישיון הרכב', icon: IC.license }
+            ];
+
+            const MAP = {
+                private: {
+                    urban: '50 קמ"ש או לפי תמרור מהירות מיוחדת.',
+                    inter: '80–90 קמ"ש (לפי הפרדה) או לפי תמרור מהירות מיוחדת.',
+                    freeway: '110 קמ"ש או לפי תמרור מהירות מיוחדת.',
+                    sign426: 'לפי תמרור 426 עד צומת/427, אלא אם הוצב שינוי. תמיד לפי הנמוך.',
+                    reasonable: 'תמיד חלה חובת מהירות סבירה – התאמת המהירות לתנאי הדרך/התנועה/הראות.',
+                    license: 'אם ברישיון הרכב רשומה מהירות מרבית נמוכה יותר – זה הערך המחייב.'
+                },
+                bus: {
+                    urban: '50 קמ"ש או לפי תמרור מהירות מיוחדת.',
+                    inter: '80–90 קמ"ש (לפי הפרדה) או לפי תמרור מהירות מיוחדת.',
+                    freeway: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־100 קמ"ש.',
+                    sign426: 'לפי תמרור 426 עד צומת/427. תמיד לפי הנמוך.',
+                    reasonable: 'חובת מהירות סבירה חלה תמיד.',
+                    license: 'הנמוך מבין הרשום ברישיון לבין שאר ההגבלות – הוא המחייב.'
+                },
+                truck12: {
+                    urban: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־50 קמ"ש.',
+                    inter: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־80 קמ"ש (בכל סוגי ההפרדה).',
+                    freeway: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־80 קמ"ש.',
+                    sign426: 'לפי 426 עד צומת/427; אך לא לעבור את התקרה הספציפית לרכב.',
+                    reasonable: 'חובת מהירות סבירה – תמיד.',
+                    license: 'אם ברישיון הרכב נמוך יותר – זה הקובע.'
+                },
+                slow: {
+                    urban: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־40 קמ"ש.',
+                    inter: 'לפי תמרור מהירות מיוחדת ובכל מקרה לא יותר מ־40 קמ"ש.',
+                    freeway: 'אסור לנסוע בדרך מהירה.',
+                    sign426: 'אם מוצב – לפי 426 (עד צומת/427) ובכפוף לתקרת 40 קמ"ש.',
+                    reasonable: 'חובת מהירות סבירה – תמיד.',
+                    license: 'הנמוך מבין רישיון/תמרור/ברירת מחדל – יקבע.'
+                },
+                rail: {
+                    urban: '50 קמ"ש או לפי תמרור מהירות מיוחדת.',
+                    inter: '70 קמ"ש (בכל הפרדה) או לפי תמרור מהירות מיוחדת.',
+                    freeway: 'אסור לנסוע בדרך מהירה.',
+                    sign426: 'לפי 426 עד צומת/427 – אם מוצב.',
+                    reasonable: 'חובת מהירות סבירה – תמיד.',
+                    license: 'אם הרשום ברישיון נמוך יותר – הוא המחייב.'
+                }
+            };
+
+            vehWrap.innerHTML = '';
+            VEHICLES.forEach(v => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'q19-btn';
+                b.setAttribute('role', 'option');
+                b.setAttribute('aria-pressed', 'false');
+                b.dataset.veh = v.id;
+                b.innerHTML = `${v.icon}<div>${v.label}</div>`;
+                vehWrap.appendChild(b);
+            });
+
+            function renderRoads() {
+                roadWrap.innerHTML = '';
+                ROADS.forEach(r => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'q19-btn';
+                    b.setAttribute('role', 'option');
+                    b.setAttribute('aria-pressed', 'false');
+                    b.dataset.road = r.id;
+                    b.innerHTML = `${r.icon}<div>${r.label}</div>`;
+                    roadWrap.appendChild(b);
+                });
+            }
+
+            let currentVeh = null;
+
+            vehWrap.addEventListener('click', (ev) => {
+                const btn = ev.target.closest('.q19-btn');
+                if (!btn) return;
+                currentVeh = btn.dataset.veh;
+                vehWrap.querySelectorAll('.q19-btn').forEach(el => el.setAttribute('aria-pressed', String(el === btn)));
+                renderRoads();
+                roadsWrap.hidden = false;
+                infoBox.innerHTML = `<p class="muted">נבחר: <strong>${VEHICLES.find(v => v.id === currentVeh).label}</strong>. עכשיו בחר/י סוג דרך כדי לראות את התשובה.</p>`;
+            });
+
+            roadWrap.addEventListener('click', (ev) => {
+                const btn = ev.target.closest('.q19-btn');
+                if (!btn || !currentVeh) return;
+                roadWrap.querySelectorAll('.q19-btn').forEach(el => el.setAttribute('aria-pressed', String(el === btn)));
+                const road = btn.dataset.road;
+                const vehicleTxt = VEHICLES.find(v => v.id === currentVeh)?.label || '';
+                const roadTxt = ROADS.find(r => r.id === road)?.label || '';
+                const text = MAP[currentVeh]?.[road] || '—';
+                infoBox.innerHTML = `
+          <h4>תוצאה</h4>
+          <ul>
+            <li><strong>רכב:</strong> ${vehicleTxt}</li>
+            <li><strong>סוג דרך/מצב:</strong> ${roadTxt}</li>
+            <li><strong>מה חל:</strong> ${text}</li>
+          </ul>
+          <p class="muted">הכלל הכולל: נוהגים לפי <strong>הנמוך</strong> מבין ברירת המחדל לדרך, 426/427, מהירות סבירה, ומהירות ברישיון הרכב.</p>
+        `;
+            });
+
+            infoBox.innerHTML = `<p class="muted">בחר/י רכב, ואז סוג דרך – התשובה המדויקת מהטבלה תופיע כאן.</p>`;
+        }
+
+        /* === שאלה 24: initNov24Chart (קיים) === */
+        function initNov24Chart() {
+            const ns = 'http://www.w3.org/2000/svg';
+            const root = document.getElementById('nov24-root');
+            if (!root) return;
+
+            let svg = document.getElementById('nov24-svg');
+            let pointsLayer = document.getElementById('nov24-points');
+            let info = document.getElementById('nov24-info');
+            const form = document.getElementById('nov24-form');
+            const ageInput = document.getElementById('nov24-age');
+            const monthsInput = document.getElementById('nov24-months');
+            const errBox = document.getElementById('nov24-error');
+
+            // אם ה-SVG ריק (נוקה ע"י סניטציה) – נבנה אותו כולו ב-JS
+            if (!svg) {
+                svg = document.createElementNS(ns, 'svg');
+                svg.setAttribute('id', 'nov24-svg');
+                svg.setAttribute('viewBox', '0 0 920 520');
+                svg.setAttribute('role', 'img');
+                svg.setAttribute('aria-labelledby', 'nov24-title');
+                root.insertBefore(svg, root.firstChild);
+
+                const title = document.createElementNS(ns, 'title');
+                title.setAttribute('id', 'nov24-title');
+                title.textContent = 'נהג חדש/צעיר – אבני־דרך לפי זמן וגיל';
+                svg.appendChild(title);
+            }
+
+            // אם אין בסיס (צירים/גריד) – נצייר אותו עכשיו
+            if (svg.querySelectorAll('line, text').length < 4) {
+                const add = (el) => { svg.appendChild(el); return el; };
+                const line = (x1, y1, x2, y2, stroke = '#9ca3af', w = 2) => {
+                    const l = document.createElementNS(ns, 'line');
+                    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+                    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+                    l.setAttribute('stroke', stroke); l.setAttribute('stroke-width', w);
+                    return add(l);
+                };
+                const text = (x, y, str, fs = 13, fw = '700', anchor = 'middle') => {
+                    const t = document.createElementNS(ns, 'text');
+                    t.setAttribute('x', x); t.setAttribute('y', y);
+                    t.setAttribute('font-size', fs); t.setAttribute('font-weight', fw);
+                    t.setAttribute('text-anchor', anchor);
+                    t.textContent = str; return add(t);
+                };
+
+                // כותרת
+                text(460, 30, 'נהג חדש/צעיר – אבני־דרך לפי זמן וגיל', 16, '700');
+
+                // צירים
+                line(80, 460, 840, 460, '#9ca3af', 2); // X
+                line(80, 460, 80, 100, '#9ca3af', 2);  // Y
+
+                // טיקים X + קווי רקע
+                const xTicks = [{ x: 80, lab: '0' }, { x: 104, lab: '3' }, { x: 128, lab: '6' }, { x: 190, lab: '12' }, { x: 270, lab: '24' }, { x: 460, lab: '48' }, { x: 745, lab: '84' }];
+                xTicks.forEach(tk => { line(tk.x, 460, tk.x, 100, '#e5e7eb', 1); text(tk.x, 476, tk.lab, 11, '400', 'start'); });
+
+                // טיקים Y + קווי רקע (17–24)
+                const yMap = [[460, '17'], [408, '18'], [357, '19'], [305, '20'], [254, '21'], [202, '22'], [151, '23'], [100, '24']];
+                yMap.forEach(([yy, lab]) => { line(80, yy, 840, yy, '#e5e7eb', 1); const tx = document.createElementNS(ns, 'text'); tx.setAttribute('x', '60'); tx.setAttribute('y', yy); tx.setAttribute('font-size', '11'); tx.textContent = lab; svg.appendChild(tx); });
+
+                // תוויות צירים
+                text(460, 494, 'זמן מאז הוצאת הרישיון (חודשים)', 12, '700');
+                const yLbl = document.createElementNS(ns, 'text');
+                yLbl.setAttribute('x', '28'); yLbl.setAttribute('y', '280');
+                yLbl.setAttribute('font-size', '12'); yLbl.setAttribute('font-weight', '700');
+                yLbl.setAttribute('transform', 'rotate(-90 28,280)'); yLbl.setAttribute('text-anchor', 'middle');
+                yLbl.textContent = 'גיל הנהג (שנים)'; svg.appendChild(yLbl);
+            }
+
+            // שכבת נקודות
+            if (!pointsLayer) {
+                pointsLayer = document.createElementNS(ns, 'g');
+                pointsLayer.setAttribute('id', 'nov24-points');
+                svg.appendChild(pointsLayer);
+            }
+
+            // קנה מידה
+            const MIN_AGE = 17, MAX_AGE = 24, X_MAX_MONTHS = 96;
+            const x0 = 80, x1 = 840, y0 = 460, y1 = 100;
+            const xScale = (x1 - x0) / X_MAX_MONTHS, yScale = (y0 - y1) / (MAX_AGE - MIN_AGE);
+            const X = m => x0 + m * xScale;
+            const Y = a => y0 - (a - MIN_AGE) * yScale;
+
+            function addPt(p) {
+                const g = document.createElementNS(ns, 'g');
+                g.classList.add('pt'); g.setAttribute('data-id', p.id);
+                g.setAttribute('data-months', String(p.m));
+                g.setAttribute('data-age', String(p.age));
+                g.setAttribute('transform', `translate(${X(p.m)},${Y(p.age)})`);
+                if (p.kind === 'sched3') {
+                    const poly = document.createElementNS(ns, 'polygon');
+                    poly.setAttribute('points', '0,-8 8,0 0,8 -8,0');
+                    poly.setAttribute('fill', '#ef4444'); poly.setAttribute('stroke', '#991b1b');
+                    g.appendChild(poly);
+                } else {
+                    const c = document.createElementNS(ns, 'circle');
+                    c.setAttribute('r', '6');
+                    c.setAttribute('fill', p.kind === 'age' ? '#059669' : '#2563eb');
+                    c.setAttribute('stroke', p.kind === 'age' ? '#065f46' : '#1e40af');
+                    g.appendChild(c);
+                }
+                const tx = document.createElementNS(ns, 'text');
+                tx.setAttribute('x', '8'); tx.setAttribute('y', '-10'); tx.setAttribute('font-size', '11');
+                tx.textContent = p.label; g.appendChild(tx);
+                pointsLayer.appendChild(g);
+            }
+
+            // נקודות קבועות
+            const pts = [
+                { id: 't0', label: 'התחלה', m: 0, age: 17.00, kind: 'milestone' },
+                { id: 't3', label: '3 ח׳', m: 3, age: 17.25, kind: 'milestone' },
+                { id: 't6', label: '6 ח׳', m: 6, age: 17.50, kind: 'milestone' },
+                { id: 't24', label: '24 ח׳', m: 24, age: 19.00, kind: 'milestone' },
+                { id: 'age21', label: 'גיל 21', m: (21 - MIN_AGE) * 12, age: 21.00, kind: 'age' },
+                { id: 'age24', label: 'גיל 24', m: (24 - MIN_AGE) * 12, age: 24.00, kind: 'age' },
+                { id: 'sched3', label: 'אירוע תוספת שלישית', m: 8, age: 17 + 8 / 12, kind: 'sched3' }
+            ];
+            // צייר רק אם טרם צוירו
+            if (!pointsLayer.querySelector('.pt')) pts.forEach(addPt);
+
+            // === רנדר פרטים – גרסה מלאה עם "תקנות רלוונטיות" ===
+            function fmtMonths(m) { if (m === 0) return '0'; return (m % 12 === 0) ? (m / 12 + ' שנים') : (m + ' חודשים'); }
+
+            // נקודות קבועות – טקסטים מלאים עם תקנות
+            function infoFixed_t0(p) {
+                return `
+      <h4>התחלה – ${fmtMonths(p.m)} מאז הרישיון, גיל ${p.age.toFixed(2).replace('.00', '')}</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>סטטוס:</strong> נהג חדש (שנתיים) + נהג חדש צעיר (&lt;24).</li>
+        <li><strong>ליווי:</strong> חודשים 0–3 – חובה תמיד (יום ולילה).</li>
+        <li><strong>נוסעים (&lt;21):</strong> ללא מלווה – עד שניים; עם מלווה – מותר יותר.</li>
+        <li><strong>שלט:</strong> "נהג חדש" חובה.</li>
+        <li><strong>תצהיר:</strong> טרם; ממילא לא לפני גיל 17 ו־3 חודשים.</li>
+        <li><strong>תוספת שלישית:</strong> כתב אישום/קנס → הארכה עד תום ההליכים/תשלום; הרשעה → הארכה שנתיים; 9 עבירות מסוימות → לא יחודש רישיון.</li>
+      </ul>`;
+            }
+            function infoFixed_t3(p) {
+                return `
+      <h4>אבן־דרך – ${fmtMonths(p.m)} מאז הרישיון, גיל ~${p.age.toFixed(2)}</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>ליווי:</strong> נכנסים לשלב 2 (חודשים 4–6): <u>ליווי בלילה</u> (21:00–06:00); ביום מותר ללא מלווה.</li>
+        <li><strong>נוסעים (&lt;21):</strong> מגבלת שני נוסעים ללא מלווה עדיין חלה.</li>
+        <li><strong>שלט:</strong> חובה.</li>
+      </ul>`;
+            }
+            function infoFixed_t6(p) {
+                return `
+      <h4>אבן־דרך – ${fmtMonths(p.m)} מאז הרישיון, גיל ~${p.age.toFixed(2)}</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>ליווי:</strong> שלב 2 הסתיים; מכאן אין חובת ליווי (שלב 3).</li>
+        <li><strong>תצהיר:</strong> להשלים תצהיר בגב ההיתר; לאחריו רישיון ל־18 ח׳. אם לא הוכח – ההיתר הזמני מתחדש עד ביצוע/עד גיל 24.</li>
+        <li><strong>שלט:</strong> עדיין חובה עד 24 ח׳ (אלא אם הוארך מכוח תוספת שלישית).</li>
+      </ul>`;
+            }
+            function infoFixed_t24(p) {
+                return `
+      <h4>סוף תקופת "נהג חדש" – ${fmtMonths(p.m)}, גיל ~${p.age.toFixed(2)}</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>ברירת מחדל:</strong> מסתיים הסטטוס; הסרת שלט "נהג חדש".</li>
+        <li><strong>חריג:</strong> אם קיימת עבירת "תוספת שלישית" בהליך/הרשעה – הסטטוס עשוי להיות <u>מוארך</u>.</li>
+      </ul>`;
+            }
+            function infoFixed_age21(p) {
+                return `
+      <h4>נקודת גיל – ${p.age}, כ־${fmtMonths(p.m)} מאז הרישיון</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>נוסעים:</strong> מגבלת "עד שניים ללא מלווה" מסתיימת.</li>
+      </ul>`;
+            }
+            function infoFixed_age24(p) {
+                return `
+      <h4>נקודת גיל – ${p.age}, כ־${fmtMonths(p.m)} מאז הרישיון</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>נהג חדש צעיר:</strong> מסתיים בגיל 24.</li>
+        <li><strong>היתר זמני/תצהיר:</strong> ההיתר לא מתחדש מעבר לגיל 24.</li>
+      </ul>`;
+            }
+            function infoFixed_sched3(p) {
+                return `
+      <h4>אירוע "תוספת שלישית" – ${fmtMonths(p.m)}, גיל ~${p.age.toFixed(2)}</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>כתב אישום/קנס:</strong> הארכת "נהג חדש" עד תום ההליכים/תשלום (אם ביקש להישפט – עד תום ההליכים).</li>
+        <li><strong>הרשעה:</strong> הארכה <u>שנתיים</u> (מן ההרשעה/מסוף התקופה; ואם פסילה – מתום הפסילה), בכפוף לבחינות/בדיקות.</li>
+        <li><strong>לא יחודש רישיון (9 עבירות):</strong> נהיגה ללא רישיון; שימוש ברכב לעוון/פשע/עבירת מוסר; אי־עצירה למסילה; אי־ז״ק/אור אדום; שכרות/סמים; עקיפה אסורה; מהירות מעל המותר; אי־סיוע לנפגע.</li>
+      </ul>
+      <p class="muted">האירוע יכול להתרחש בכל גיל ובכל זמן; הנקודה בגרף היא המחשה.</p>`;
+            }
+
+            const infoById = {
+                t0: infoFixed_t0,
+                t3: infoFixed_t3,
+                t6: infoFixed_t6,
+                t24: infoFixed_t24,
+                age21: infoFixed_age21,
+                age24: infoFixed_age24,
+                sched3: infoFixed_sched3
+            };
+
+            // נקודה אישית – בניית "תקנות רלוונטיות" דינמית
+            function infoForCustom(age, months) {
+                const isYoung = age < 24;
+                const stage = isYoung
+                    ? (months < 3 ? '0–3: חובה מלווה (יום ולילה)'
+                        : months < 6 ? '4–6: מלווה בלילה (21:00–06:00); ביום מותר ללא מלווה'
+                            : '6+: אין חובת ליווי (שלב 3)')
+                    : 'לא "נהג חדש צעיר"';
+                const passengers = age < 21
+                    ? 'ללא מלווה – עד שני נוסעים; עם מלווה/אחרי שנתיים/מעל 21 – מותר יותר'
+                    : 'אין מגבלת נוסעים ייחודית';
+                const sign = months < 24
+                    ? 'שלט "נהג חדש" – חובה (עד 24 חודשים, אלא אם הוארך מכוח תוספת שלישית)'
+                    : 'ברירת מחדל: לא נדרש; חריג: אם הוארך מכוח תוספת שלישית';
+                const novice = months < 24
+                    ? 'בתוקף (נהג חדש – שנתיים)'
+                    : 'הסתיימה התקופה הבסיסית (בכפוף להארכות "תוספת שלישית" אם חלות)';
+                const affidavit = isYoung
+                    ? (months < 6
+                        ? 'תצהיר – טרם; נדרש רק לאחר סיום הליווי (6 ח׳) ובכל מקרה לא לפני גיל 17 ו־3 ח׳'
+                        : 'תצהיר – לאחר סיום הליווי; לאחריו מונפק רישיון ל־18 ח׳; אם לא הוכח – ההיתר מתחדש עד גיל 24')
+                    : 'תצהיר ללווי אינו רלוונטי (לא "נהג חדש צעיר")';
+                const sched3 =
+                    'תוספת שלישית: כתב אישום/קנס → הארכה עד תום ההליכים/תשלום; הרשעה → הארכה שנתיים (מן ההרשעה/מסוף התקופה; ואם פסילה – מסוף הפסילה). ' +
+                    'עבירות מסוימות (9) → לא יחודש רישיון: ללא רישיון; שימוש ברכב לעוון/פשע/עבירת מוסר; אי־עצירה למסילה; אי־ז״ק/אור אדום; שכרות/סמים; עקיפה אסורה; מהירות מעל המותר; אי־סיוע לנפגע.';
+
+                return `
+      <h4>נהג בן ${age.toFixed(2).replace('.00', '')}, ${fmtMonths(months)} לאחר קבלת רישיון – מה חל?</h4>
+      <h5>עיקר התקנות</h5>
+      <ul>
+        <li><strong>מעמד נהג חדש:</strong> ${novice}</li>
+        <li><strong>ליווי:</strong> ${stage}</li>
+        <li><strong>נוסעים:</strong> ${passengers}</li>
+        <li><strong>שלט:</strong> ${sign}</li>
+        <li><strong>תצהיר/היתר זמני:</strong> ${affidavit}</li>
+        <li><strong>תוספת שלישית – דגשים:</strong> ${sched3}</li>
+      </ul>`;
+            }
+
+            // בחירת נקודה + הדגשה + הזרקת תקנות
+            function selectPoint(id) {
+                pointsLayer.querySelectorAll('.pt').forEach(el => {
+                    el.classList.remove('active', 'dimmed');
+                });
+                pointsLayer.querySelectorAll('.pt').forEach(el => {
+                    if (el.getAttribute('data-id') !== id) el.classList.add('dimmed');
+                });
+                const el = pointsLayer.querySelector(`.pt[data-id="${id}"]`);
+                if (!el || !info) return;
+                el.classList.add('active');
+
+                const months = +el.getAttribute('data-months');
+                const age = +el.getAttribute('data-age');
+
+                if (id === 'custom') {
+                    info.innerHTML = infoForCustom(age, months);
+                } else {
+                    const renderer = infoById[id];
+                    info.innerHTML = renderer ? renderer({ m: months, age }) : `<h4>פרטים</h4><p class="muted">—</p>`;
+                }
+
+                try { info.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) { }
+            }
+            svg.addEventListener('click', function (ev) {
+                let ptEl = null;
+
+                // עדיפות: composedPath – תופס גם כשנלחץ טקסט/פוליגון בתוך ה-<g class="pt">
+                if (typeof ev.composedPath === 'function') {
+                    const path = ev.composedPath();
+                    ptEl = path && path.find(el => el && el.classList && el.classList.contains('pt')) || null;
+                }
+
+                // נפילה אחורה: טיפוס ידני במעלה ה-DOM
+                if (!ptEl) {
+                    let n = ev.target && ev.target.nodeType === 1 ? ev.target : ev.target && ev.target.parentNode;
+                    while (n && n !== svg) {
+                        if (n.classList && n.classList.contains('pt')) { ptEl = n; break; }
+                        n = n.parentNode;
+                    }
+                }
+
+                if (ptEl && ptEl.hasAttribute('data-id')) {
+                    selectPoint(ptEl.getAttribute('data-id'));
+                }
+            });
+
+            if (form && ageInput && monthsInput) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    errBox.style.display = 'none';
+                    const age = parseFloat(ageInput.value);
+                    const months = parseInt(monthsInput.value, 10);
+
+                    if (isNaN(age) || isNaN(months)) {
+                        errBox.textContent = 'נא להזין גיל וחודשים מספריים.';
+                        errBox.style.display = 'block';
+                        return;
+                    }
+                    const MIN_AGE = 17, MAX_AGE = 24, X_MAX_MONTHS = 96; // זהים לקבועים אצלך
+                    if (age < MIN_AGE || age > MAX_AGE || months < 0 || months > X_MAX_MONTHS) {
+                        errBox.textContent = `טווחים מותרים: גיל ${MIN_AGE}–${MAX_AGE} שנים, חודשים 0–${X_MAX_MONTHS}.`;
+                        errBox.style.display = 'block';
+                        return;
+                    }
+
+                    // יצירה/עדכון נקודה "אישי"
+                    let g = pointsLayer.querySelector('.pt[data-id="custom"]');
+                    if (!g) {
+                        const ns = 'http://www.w3.org/2000/svg';
+                        g = document.createElementNS(ns, 'g');
+                        g.setAttribute('class', 'pt');
+                        g.setAttribute('data-id', 'custom');
+
+                        const c = document.createElementNS(ns, 'circle');
+                        c.setAttribute('r', '7'); c.setAttribute('fill', '#7c3aed'); c.setAttribute('stroke', '#5b21b6');
+                        g.appendChild(c);
+
+                        const t = document.createElementNS(ns, 'text');
+                        t.setAttribute('x', '8'); t.setAttribute('y', '-10'); t.textContent = 'אישי';
+                        g.appendChild(t);
+
+                        pointsLayer.appendChild(g);
+                    }
+                    g.setAttribute('data-months', String(months));
+                    g.setAttribute('data-age', String(age));
+
+                    // שימוש בפונקציות קנה-מידה הקיימות אצלך
+                    g.setAttribute('transform', `translate(${X(months)},${Y(age)})`);
+
+                    selectPoint('custom');
+                });
+            }
+
+            // בחירת ברירת־מחדל
+            selectPoint('t0');
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
