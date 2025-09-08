@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TODO: Add title, meta tags, tracking tags, and favicon. -->
+    <title>CallApp</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <div class="page-container">
+        <div id="columnOne">
+            <img id="mobileLogo" class="mobile-only" src="./assets/Logo_White.svg" alt="CallApp Logo">
+            <picture id="phones">
+                <source media="(min-width: 1200px)" srcset="./assets/phones_xl.webp">
+                <source media="(min-width: 601px)" srcset="./assets/phones_lg.webp">
+                <source media="(min-width: 351px)" srcset="./assets/phones_md.webp">
+                <source media="(min-width: 251px)" srcset="./assets/phones_sm.webp">
+                <source media="(max-width: 250px)" srcset="./assets/phones_xs.webp">
+                <img src="./assets/phones_xs.webp" alt="Phones receiving scam calls." aria-hidden="true">
+            </picture>
+        </div>
+        <div id="columnTwo">
+            <img id="desktopLogo" class="desktop-only" src="./assets/Logo_White.svg" alt="CallApp Logo">
+            <p><span class="bold">¿Cansado de las estafas?</span><br>¡Prueba CallApp gratis!</p>
+            <!-- TODO: Change the HREF to the real download link. -->
+            <a class="cta-button flex-button" href="#" aria-label="Download CallApp on Google Play" role="button">
+                <img src="./assets/Google_Play_logo.svg" alt="Google Play Logo">
+                <img src="./assets/Get_it_on_Google_Play.svg" alt="Get it on Google Play">
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
